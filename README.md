@@ -80,9 +80,15 @@ The platform is designed as an end-to-end recruitment suite featuring role-based
 - **Candidate Portal Dashboard:**
   - View assigned, in-progress, and completed interview assessments.
   - Review latest completed assessment score and status.
-- **Interview Instructions & Briefing:**
-  - Detailed time limit, question count, and guidelines.
-- **Interactive Interview Workspace:**
+- **Hardware Diagnostics & Pre-Assessment System Check:**
+  - Mandatory webcam and microphone diagnostics before assessment launch.
+  - Live video viewfinder mirror with face framing alignment guide.
+  - Real-time microphone audio input visualizer with dynamic volume level meter.
+  - Browser permissions and speech recognition capability verification.
+- **Live Proctored Assessment Workspace:**
+  - **Floating Proctoring Camera Widget:** Live picture-in-picture webcam feed with active recording badge (`● PROCTORING ACTIVE`), facial presence tracking, and real-time audio equalizer bars.
+  - **Real-Time Voice-to-Text Dictation:** Click *"Dictate with Microphone"* to speak answers naturally; speech is transcribed in real-time into the response editor.
+  - **Assessment Integrity Monitor:** Detects tab switching or window blur events with live proctoring alerts.
   - Current question view with category and difficulty badges.
   - Live countdown timer with auto-submit safeguard.
   - Live word count and character count monitors.

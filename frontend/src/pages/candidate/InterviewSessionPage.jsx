@@ -3,6 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { sessionAPI, responseAPI } from '../../api/client';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Modal from '../../components/Modal';
+import ProctoringCamera from '../../components/ProctoringCamera';
+import SpeechToTextButton from '../../components/SpeechToTextButton';
+import { useMediaStream } from '../../hooks/useMediaStream';
 import { useToast } from '../../context/ToastContext';
 import {
   Clock,
@@ -13,13 +16,17 @@ import {
   HelpCircle,
   Sparkles,
   Check,
-  RotateCcw
+  RotateCcw,
+  Camera,
+  Mic,
+  ShieldCheck,
+  Volume2
 } from 'lucide-react';
 
 const InterviewSessionPage = () => {
   const { sessionId } = useParams();
   const navigate = useNavigate();
-  const { success, error } = useToast();
+  const { success, error, warning } = useToast();
 
   const [session, setSession] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -30,8 +37,37 @@ const InterviewSessionPage = () => {
   const [submitStep, setSubmitStep] = useState('');
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [timeLeftSeconds, setTimeLeftSeconds] = useState(1800); // 30 mins default
+  const [warningCount, setWarningCount] = useState(0);
+
+  // Active camera and microphone stream for the assessment
+  const {
+    stream,
+    isCameraActive,
+    isMicActive,
+    audioLevel,
+    toggleCamera,
+    toggleMic
+  } = useMediaStream({ video: true, audio: true, autoStart: true });
 
   const timerRef = useRef(null);
+
+  // Proctoring: Detect window blur / tab switching
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setWarningCount((prev) => {
+          const next = prev + 1;
+          warning(`Assessment Alert (${next}): Tab switch detected. Please stay focused on the assessment window.`);
+          return next;
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [warning]);
 
   useEffect(() => {
     loadSessionData();
@@ -93,6 +129,18 @@ const InterviewSessionPage = () => {
       ...prev,
       [qId]: text
     }));
+  };
+
+  const handleVoiceTranscript = (spokenText) => {
+    if (!currentQuestion) return;
+    const qId = currentQuestion._id || currentQuestion.id;
+    const existing = answers[qId] ? answers[qId].trim() + ' ' : '';
+    const updated = existing + spokenText;
+    setAnswers((prev) => ({
+      ...prev,
+      [qId]: updated
+    }));
+    autosaveAnswer(qId, updated);
   };
 
   // Autosave answer on question change
@@ -209,8 +257,18 @@ const InterviewSessionPage = () => {
           </div>
         </div>
 
-        {/* Timer */}
-        <div className="flex items-center gap-3">
+        {/* Proctoring Status & Timer */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold border border-slate-800 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[11px] uppercase tracking-wider">AI Proctored</span>
+          </div>
+
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold">
+            <Volume2 className="w-3.5 h-3.5 text-indigo-600" />
+            <span>Mic: {audioLevel > 5 ? `${audioLevel}%` : 'Listening'}</span>
+          </div>
+
           <div
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-bold ${
               timeLeftSeconds < 300
@@ -302,12 +360,15 @@ const InterviewSessionPage = () => {
 
           {/* Answer Textarea */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-600">
               <label htmlFor="answer-box">Your Response</label>
-              <div className="flex items-center gap-3 text-slate-400 font-normal">
-                <span>{wordCount} Words</span>
-                <span>•</span>
-                <span>{charCount} Characters</span>
+              <div className="flex items-center gap-3">
+                <SpeechToTextButton onTranscript={handleVoiceTranscript} />
+                <div className="flex items-center gap-2 text-slate-400 font-normal">
+                  <span>{wordCount} Words</span>
+                  <span>•</span>
+                  <span>{charCount} Characters</span>
+                </div>
               </div>
             </div>
 
@@ -316,7 +377,7 @@ const InterviewSessionPage = () => {
               rows={8}
               value={currentAnswer}
               onChange={(e) => handleAnswerChange(e.target.value)}
-              placeholder="Type your detailed answer here. Describe fundamental principles, relevant frameworks, edge cases, and architectural considerations..."
+              placeholder="Type your detailed answer or click 'Dictate with Microphone' above to speak naturally. Describe fundamental principles, relevant frameworks, and practical examples..."
               className="w-full p-4 text-sm bg-slate-50/70 border border-slate-200 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition leading-relaxed"
             />
           </div>
@@ -396,6 +457,17 @@ const InterviewSessionPage = () => {
           </div>
         </div>
       </Modal>
+
+      {/* Floating Picture-in-Picture Proctoring Camera Widget */}
+      <ProctoringCamera
+        stream={stream}
+        isCameraActive={isCameraActive}
+        isMicActive={isMicActive}
+        audioLevel={audioLevel}
+        onToggleCamera={toggleCamera}
+        onToggleMic={toggleMic}
+        warningCount={warningCount}
+      />
     </div>
   );
 };

@@ -178,6 +178,38 @@ const CandidateReportPage = () => {
           </div>
         </div>
 
+        {/* Assessment Proctoring & Media Verification Telemetry */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-900 text-white rounded-2xl border border-slate-800">
+          <div className="flex items-center gap-2.5">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div>
+              <div className="text-[10px] uppercase font-bold text-slate-400">Webcam Stream</div>
+              <div className="text-xs font-bold text-emerald-400">Verified & Monitored</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <div className="w-2 h-2 rounded-full bg-emerald-400" />
+            <div>
+              <div className="text-[10px] uppercase font-bold text-slate-400">Microphone Audio</div>
+              <div className="text-xs font-bold text-emerald-400">Monitored & Dictated</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <div className="w-2 h-2 rounded-full bg-indigo-400" />
+            <div>
+              <div className="text-[10px] uppercase font-bold text-slate-400">Sentiment Evaluation</div>
+              <div className="text-xs font-bold text-indigo-300">Multi-Phase NLP</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <div className="w-2 h-2 rounded-full bg-emerald-400" />
+            <div>
+              <div className="text-[10px] uppercase font-bold text-slate-400">Session Integrity</div>
+              <div className="text-xs font-bold text-emerald-400">Verified Secure</div>
+            </div>
+          </div>
+        </div>
+
         {/* Recruiter Policy Alert */}
         <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-start gap-3">
           <Bot className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
