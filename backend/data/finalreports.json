@@ -1,0 +1,208 @@
+[
+  {
+    "_id": "doc_muz5f3xm_8frsmx3db",
+    "sessionId": "sess_alex_01",
+    "candidateId": "doc_muz5f3w3_kyk8kn9ux",
+    "interviewId": "int_fullstack_2026",
+    "technicalScore": 82,
+    "sentimentScore": 81,
+    "overallScore": 82,
+    "recommendation": "Recommended",
+    "summary": "Candidate completed 6 evaluation questions. Overall technical competency rated at 82/100 with 81/100 communication sentiment. Candidate demonstrates recommended suitability.",
+    "categoryScores": {
+      "Programming": 93,
+      "Database": 94,
+      "Networking": 90,
+      "Operating Systems": 83,
+      "Data Structures": 94,
+      "HR/Behavioral": 35
+    },
+    "sentimentStats": {
+      "totalAnswers": 6,
+      "positiveAnswers": 4,
+      "neutralAnswers": 2,
+      "negativeAnswers": 0,
+      "positivePercentage": 67,
+      "neutralPercentage": 33,
+      "negativePercentage": 0,
+      "averageConfidence": 0.76
+    },
+    "technicalMetrics": {
+      "averageRelevance": 82,
+      "averageCorrectness": 87,
+      "averageConceptCoverage": 80,
+      "averageCompleteness": 71
+    },
+    "aiStrengths": [
+      "Identified core key concepts including: event loop, libuv, single thread.",
+      "Offered a coherent explanation with adequate fundamental understanding.",
+      "Directly addressed the prompt without drifting off-topic.",
+      "Identified core key concepts including: redundancy, anomalies, 1NF.",
+      "Identified core key concepts including: DNS resolution, TCP handshake, SYN."
+    ],
+    "aiWeaknesses": [
+      "Omitted expected key terminology/concepts: promises.",
+      "Omitted expected key terminology/concepts: memory space, shared heap.",
+      "Omitted expected key terminology/concepts: collaboration, active listening, data-driven.",
+      "Technical depth could be strengthened by clarifying exact mechanisms and implementation details."
+    ],
+    "createdAt": "2026-10-08T06:21:39.370Z",
+    "updatedAt": "2026-10-08T06:21:39.370Z",
+    "id": "doc_muz5f3xm_8frsmx3db"
+  },
+  {
+    "_id": "doc_muz5f3yl_ddgurioxt",
+    "sessionId": "sess_priya_02",
+    "candidateId": "doc_muz5f3w7_gluiqltqc",
+    "interviewId": "int_fullstack_2026",
+    "technicalScore": 74,
+    "sentimentScore": 59,
+    "overallScore": 70,
+    "recommendation": "Recommended",
+    "summary": "Candidate completed 6 evaluation questions. Overall technical competency rated at 74/100 with 59/100 communication sentiment. Candidate demonstrates recommended suitability.",
+    "categoryScores": {
+      "Programming": 77,
+      "Database": 88,
+      "Networking": 75,
+      "Operating Systems": 79,
+      "Data Structures": 88,
+      "HR/Behavioral": 35
+    },
+    "sentimentStats": {
+      "totalAnswers": 6,
+      "positiveAnswers": 0,
+      "neutralAnswers": 6,
+      "negativeAnswers": 0,
+      "positivePercentage": 0,
+      "neutralPercentage": 100,
+      "negativePercentage": 0,
+      "averageConfidence": 0.68
+    },
+    "technicalMetrics": {
+      "averageRelevance": 79,
+      "averageCorrectness": 82,
+      "averageConceptCoverage": 70,
+      "averageCompleteness": 51
+    },
+    "aiStrengths": [
+      "Identified core key concepts including: event loop, libuv, single thread.",
+      "Identified core key concepts including: anomalies, 1NF, 2NF.",
+      "Directly addressed the prompt without drifting off-topic.",
+      "Correctly touched upon: TCP handshake, SYN, ACK, TLS handshake, certificate, port 443.",
+      "Identified core key concepts including: process, thread, memory space."
+    ],
+    "aiWeaknesses": [
+      "Omitted expected key terminology/concepts: non-blocking.",
+      "Omitted expected key terminology/concepts: redundancy.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples.",
+      "Omitted expected key terminology/concepts: DNS resolution, symmetric key, encrypted.",
+      "Omitted expected key terminology/concepts: shared heap, registers."
+    ],
+    "createdAt": "2026-10-08T06:21:39.405Z",
+    "updatedAt": "2026-10-08T06:21:39.405Z",
+    "id": "doc_muz5f3yl_ddgurioxt"
+  },
+  {
+    "_id": "doc_muz5f3zr_p69kahuzb",
+    "sessionId": "sess_marcus_03",
+    "candidateId": "doc_muz5f3wc_in2bzm337",
+    "interviewId": "int_aiml_cloud_2026",
+    "technicalScore": 75,
+    "sentimentScore": 63,
+    "overallScore": 71,
+    "recommendation": "Recommended",
+    "summary": "Candidate completed 5 evaluation questions. Overall technical competency rated at 75/100 with 63/100 communication sentiment. Candidate demonstrates recommended suitability.",
+    "categoryScores": {
+      "AI/ML": 88,
+      "General Technical": 83,
+      "Database": 84,
+      "Networking": 52,
+      "Operating Systems": 67
+    },
+    "sentimentStats": {
+      "totalAnswers": 5,
+      "positiveAnswers": 1,
+      "neutralAnswers": 4,
+      "negativeAnswers": 0,
+      "positivePercentage": 20,
+      "neutralPercentage": 80,
+      "negativePercentage": 0,
+      "averageConfidence": 0.71
+    },
+    "technicalMetrics": {
+      "averageRelevance": 78,
+      "averageCorrectness": 83,
+      "averageConceptCoverage": 71,
+      "averageCompleteness": 54
+    },
+    "aiStrengths": [
+      "Identified core key concepts including: attention mechanism, query key value, dot product.",
+      "Offered a coherent explanation with adequate fundamental understanding.",
+      "Identified core key concepts including: monolith, microservices, distributed transactions.",
+      "Identified core key concepts including: redundancy, anomalies, 1NF.",
+      "Directly addressed the prompt without drifting off-topic."
+    ],
+    "aiWeaknesses": [
+      "Omitted expected key terminology/concepts: long sequences.",
+      "Omitted expected key terminology/concepts: message brokers.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples.",
+      "Omitted expected key terminology/concepts: atomic values.",
+      "Omitted expected key terminology/concepts: DNS resolution, SYN, ACK."
+    ],
+    "createdAt": "2026-10-08T06:21:39.447Z",
+    "updatedAt": "2026-10-08T06:21:39.447Z",
+    "id": "doc_muz5f3zr_p69kahuzb"
+  },
+  {
+    "_id": "doc_muz5f40r_hxf2nsyc8",
+    "sessionId": "sess_jordan_04",
+    "candidateId": "doc_muz5f3wg_6wz9kjgau",
+    "interviewId": "int_fullstack_2026",
+    "technicalScore": 39,
+    "sentimentScore": 42,
+    "overallScore": 40,
+    "recommendation": "Not Recommended",
+    "summary": "Candidate completed 6 evaluation questions. Overall technical competency rated at 39/100 with 42/100 communication sentiment. Candidate demonstrates not recommended suitability.",
+    "categoryScores": {
+      "Programming": 60,
+      "Database": 33,
+      "Networking": 18,
+      "Operating Systems": 51,
+      "Data Structures": 50,
+      "HR/Behavioral": 21
+    },
+    "sentimentStats": {
+      "totalAnswers": 6,
+      "positiveAnswers": 1,
+      "neutralAnswers": 2,
+      "negativeAnswers": 3,
+      "positivePercentage": 17,
+      "neutralPercentage": 33,
+      "negativePercentage": 50,
+      "averageConfidence": 0.79
+    },
+    "technicalMetrics": {
+      "averageRelevance": 61,
+      "averageCorrectness": 35,
+      "averageConceptCoverage": 22,
+      "averageCompleteness": 44
+    },
+    "aiStrengths": [
+      "Correctly touched upon: event loop, single thread, timers, poll.",
+      "Correctly touched upon: anomalies.",
+      "Correctly touched upon: process, thread, context switching.",
+      "Directly addressed the prompt without drifting off-topic.",
+      "Correctly touched upon: hash table, collisions, chaining."
+    ],
+    "aiWeaknesses": [
+      "Omitted expected key terminology/concepts: libuv, non-blocking, check.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples.",
+      "Omitted expected key terminology/concepts: redundancy, 1NF, 2NF.",
+      "Technical depth could be strengthened by clarifying exact mechanisms and implementation details.",
+      "Omitted expected key terminology/concepts: DNS resolution, TCP handshake, SYN."
+    ],
+    "createdAt": "2026-10-08T06:21:39.483Z",
+    "updatedAt": "2026-10-08T06:21:39.483Z",
+    "id": "doc_muz5f40r_hxf2nsyc8"
+  }
+]

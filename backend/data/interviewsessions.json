@@ -1,0 +1,55 @@
+[
+  {
+    "_id": "sess_alex_01",
+    "candidateId": "doc_muz5f3w3_kyk8kn9ux",
+    "interviewId": "int_fullstack_2026",
+    "status": "completed",
+    "startedAt": "2026-10-08T03:21:39.334Z",
+    "completedAt": "2026-10-08T04:21:39.334Z",
+    "createdAt": "2026-10-08T06:21:39.335Z",
+    "updatedAt": "2026-10-08T06:21:39.335Z",
+    "id": "sess_alex_01"
+  },
+  {
+    "_id": "sess_priya_02",
+    "candidateId": "doc_muz5f3w7_gluiqltqc",
+    "interviewId": "int_fullstack_2026",
+    "status": "completed",
+    "startedAt": "2026-10-08T01:21:39.371Z",
+    "completedAt": "2026-10-08T02:21:39.371Z",
+    "createdAt": "2026-10-08T06:21:39.372Z",
+    "updatedAt": "2026-10-08T06:21:39.372Z",
+    "id": "sess_priya_02"
+  },
+  {
+    "_id": "sess_marcus_03",
+    "candidateId": "doc_muz5f3wc_in2bzm337",
+    "interviewId": "int_aiml_cloud_2026",
+    "status": "completed",
+    "startedAt": "2026-10-07T22:21:39.406Z",
+    "completedAt": "2026-10-07T23:21:39.406Z",
+    "createdAt": "2026-10-08T06:21:39.408Z",
+    "updatedAt": "2026-10-08T06:21:39.408Z",
+    "id": "sess_marcus_03"
+  },
+  {
+    "_id": "sess_jordan_04",
+    "candidateId": "doc_muz5f3wg_6wz9kjgau",
+    "interviewId": "int_fullstack_2026",
+    "status": "completed",
+    "startedAt": "2026-10-07T18:21:39.448Z",
+    "completedAt": "2026-10-07T19:21:39.448Z",
+    "createdAt": "2026-10-08T06:21:39.449Z",
+    "updatedAt": "2026-10-08T06:21:39.449Z",
+    "id": "sess_jordan_04"
+  },
+  {
+    "_id": "sess_samira_05",
+    "candidateId": "doc_muz5f3wl_hdhgqokht",
+    "interviewId": "int_aiml_cloud_2026",
+    "status": "pending",
+    "createdAt": "2026-10-08T06:21:39.485Z",
+    "updatedAt": "2026-10-08T06:21:39.485Z",
+    "id": "sess_samira_05"
+  }
+]

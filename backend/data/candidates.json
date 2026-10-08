@@ -1,0 +1,90 @@
+[
+  {
+    "_id": "doc_muz5f3w3_kyk8kn9ux",
+    "userId": "doc_muz5f3w1_avqmqj6nt",
+    "name": "Alex Rivera",
+    "email": "alex@interview.ai",
+    "phone": "+1 (555) 234-5678",
+    "skills": [
+      "React",
+      "Node.js",
+      "MongoDB",
+      "PostgreSQL",
+      "System Design"
+    ],
+    "resume": "Senior engineer with 5 years experience scaling web services.",
+    "createdAt": "2026-10-08T06:21:39.315Z",
+    "updatedAt": "2026-10-08T06:21:39.315Z",
+    "id": "doc_muz5f3w3_kyk8kn9ux"
+  },
+  {
+    "_id": "doc_muz5f3w7_gluiqltqc",
+    "userId": "doc_muz5f3w5_vacjmbvxq",
+    "name": "Priya Sharma",
+    "email": "candidate@interview.ai",
+    "phone": "+1 (555) 876-5432",
+    "skills": [
+      "Distributed Systems",
+      "Python",
+      "Go",
+      "Docker",
+      "Kubernetes"
+    ],
+    "resume": "Cloud backend specialist with expertise in low-latency APIs.",
+    "createdAt": "2026-10-08T06:21:39.319Z",
+    "updatedAt": "2026-10-08T06:21:39.319Z",
+    "id": "doc_muz5f3w7_gluiqltqc"
+  },
+  {
+    "_id": "doc_muz5f3wc_in2bzm337",
+    "userId": "doc_muz5f3w9_och5rwdnm",
+    "name": "Marcus Chen",
+    "email": "marcus@interview.ai",
+    "phone": "+1 (555) 345-6789",
+    "skills": [
+      "Machine Learning",
+      "PyTorch",
+      "FastAPI",
+      "Data Pipelines"
+    ],
+    "resume": "Applied AI engineer focusing on LLM deployments and embeddings.",
+    "createdAt": "2026-10-08T06:21:39.324Z",
+    "updatedAt": "2026-10-08T06:21:39.324Z",
+    "id": "doc_muz5f3wc_in2bzm337"
+  },
+  {
+    "_id": "doc_muz5f3wg_6wz9kjgau",
+    "userId": "doc_muz5f3we_ks53q4hs3",
+    "name": "Jordan Taylor",
+    "email": "jordan@interview.ai",
+    "phone": "+1 (555) 456-7890",
+    "skills": [
+      "Frontend Architecture",
+      "TypeScript",
+      "CSS/Tailwind",
+      "Next.js"
+    ],
+    "resume": "Junior-to-mid fullstack developer enthusiastic about UI/UX performance.",
+    "createdAt": "2026-10-08T06:21:39.328Z",
+    "updatedAt": "2026-10-08T06:21:39.328Z",
+    "id": "doc_muz5f3wg_6wz9kjgau"
+  },
+  {
+    "_id": "doc_muz5f3wl_hdhgqokht",
+    "userId": "doc_muz5f3wi_194dad8lx",
+    "name": "Samira Khan",
+    "email": "samira@interview.ai",
+    "phone": "+1 (555) 567-8901",
+    "skills": [
+      "DevOps",
+      "CI/CD",
+      "AWS",
+      "Terraform",
+      "Observability"
+    ],
+    "resume": "Infrastructure architect passionate about zero-downtime rollouts.",
+    "createdAt": "2026-10-08T06:21:39.333Z",
+    "updatedAt": "2026-10-08T06:21:39.333Z",
+    "id": "doc_muz5f3wl_hdhgqokht"
+  }
+]

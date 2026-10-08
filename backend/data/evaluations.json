@@ -1,0 +1,1064 @@
+[
+  {
+    "_id": "doc_muz5f3ws_uan470jsc",
+    "responseId": "doc_muz5f3wo_ft6uej942",
+    "sessionId": "sess_alex_01",
+    "candidateId": "doc_muz5f3w3_kyk8kn9ux",
+    "questionId": "q_prog_1",
+    "questionCategory": "Programming",
+    "sentiment": "Positive",
+    "sentimentConfidence": 0.8,
+    "sentimentProbabilities": {
+      "positive": 0.804,
+      "neutral": 0.16,
+      "negative": 0.036
+    },
+    "sentimentScore": 95,
+    "technicalScore": 93,
+    "relevanceScore": 100,
+    "correctnessScore": 100,
+    "conceptCoverageScore": 89,
+    "completenessScore": 74,
+    "overallAnswerScore": 94,
+    "detectedConcepts": [
+      "event loop",
+      "libuv",
+      "single thread",
+      "non-blocking",
+      "timers",
+      "poll",
+      "check",
+      "microtasks"
+    ],
+    "missingConcepts": [
+      "promises"
+    ],
+    "strengths": [
+      "Identified core key concepts including: event loop, libuv, single thread.",
+      "Offered a coherent explanation with adequate fundamental understanding.",
+      "Directly addressed the prompt without drifting off-topic."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: promises."
+    ],
+    "feedback": "Strong response displaying solid mastery of Programming. Covers critical concepts accurately with sound technical explanation.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.340Z",
+    "updatedAt": "2026-10-08T06:21:39.340Z",
+    "id": "doc_muz5f3ws_uan470jsc"
+  },
+  {
+    "_id": "doc_muz5f3wx_k4igb0gse",
+    "responseId": "doc_muz5f3wu_1o77j4tng",
+    "sessionId": "sess_alex_01",
+    "candidateId": "doc_muz5f3w3_kyk8kn9ux",
+    "questionId": "q_db_1",
+    "questionCategory": "Database",
+    "sentiment": "Positive",
+    "sentimentConfidence": 0.88,
+    "sentimentProbabilities": {
+      "positive": 0.879,
+      "neutral": 0.099,
+      "negative": 0.022
+    },
+    "sentimentScore": 97,
+    "technicalScore": 94,
+    "relevanceScore": 93,
+    "correctnessScore": 100,
+    "conceptCoverageScore": 100,
+    "completenessScore": 70,
+    "overallAnswerScore": 95,
+    "detectedConcepts": [
+      "redundancy",
+      "anomalies",
+      "1NF",
+      "2NF",
+      "3NF",
+      "atomic values",
+      "partial dependency",
+      "transitive dependency"
+    ],
+    "missingConcepts": [],
+    "strengths": [
+      "Identified core key concepts including: redundancy, anomalies, 1NF.",
+      "Offered a coherent explanation with adequate fundamental understanding.",
+      "Directly addressed the prompt without drifting off-topic."
+    ],
+    "weaknesses": [],
+    "feedback": "Strong response displaying solid mastery of Database. Covers critical concepts accurately with sound technical explanation.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.345Z",
+    "updatedAt": "2026-10-08T06:21:39.345Z",
+    "id": "doc_muz5f3wx_k4igb0gse"
+  },
+  {
+    "_id": "doc_muz5f3x2_bg6iro2pt",
+    "responseId": "doc_muz5f3wz_isvrmakxe",
+    "sessionId": "sess_alex_01",
+    "candidateId": "doc_muz5f3w3_kyk8kn9ux",
+    "questionId": "q_net_1",
+    "questionCategory": "Networking",
+    "sentiment": "Positive",
+    "sentimentConfidence": 0.78,
+    "sentimentProbabilities": {
+      "positive": 0.432,
+      "neutral": 0.464,
+      "negative": 0.104
+    },
+    "sentimentScore": 82,
+    "technicalScore": 90,
+    "relevanceScore": 70,
+    "correctnessScore": 100,
+    "conceptCoverageScore": 100,
+    "completenessScore": 74,
+    "overallAnswerScore": 88,
+    "detectedConcepts": [
+      "DNS resolution",
+      "TCP handshake",
+      "SYN",
+      "ACK",
+      "TLS handshake",
+      "certificate",
+      "symmetric key",
+      "port 443",
+      "encrypted"
+    ],
+    "missingConcepts": [],
+    "strengths": [
+      "Identified core key concepts including: DNS resolution, TCP handshake, SYN.",
+      "Offered a coherent explanation with adequate fundamental understanding."
+    ],
+    "weaknesses": [],
+    "feedback": "Strong response displaying solid mastery of Networking. Covers critical concepts accurately with sound technical explanation.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.350Z",
+    "updatedAt": "2026-10-08T06:21:39.350Z",
+    "id": "doc_muz5f3x2_bg6iro2pt"
+  },
+  {
+    "_id": "doc_muz5f3x8_udlyw49yw",
+    "responseId": "doc_muz5f3x5_6l5o96x3p",
+    "sessionId": "sess_alex_01",
+    "candidateId": "doc_muz5f3w3_kyk8kn9ux",
+    "questionId": "q_os_1",
+    "questionCategory": "Operating Systems",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.65,
+    "sentimentProbabilities": {
+      "positive": 0.27,
+      "neutral": 0.597,
+      "negative": 0.133
+    },
+    "sentimentScore": 62,
+    "technicalScore": 83,
+    "relevanceScore": 70,
+    "correctnessScore": 100,
+    "conceptCoverageScore": 75,
+    "completenessScore": 70,
+    "overallAnswerScore": 77,
+    "detectedConcepts": [
+      "process",
+      "thread",
+      "context switching",
+      "PCB",
+      "registers",
+      "cache overhead"
+    ],
+    "missingConcepts": [
+      "memory space",
+      "shared heap"
+    ],
+    "strengths": [
+      "Identified core key concepts including: process, thread, context switching.",
+      "Offered a coherent explanation with adequate fundamental understanding."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: memory space, shared heap."
+    ],
+    "feedback": "Good response demonstrating clear understanding of Operating Systems. Touches upon the primary principles; could expand on memory space.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.356Z",
+    "updatedAt": "2026-10-08T06:21:39.356Z",
+    "id": "doc_muz5f3x8_udlyw49yw"
+  },
+  {
+    "_id": "doc_muz5f3xe_wabzf469w",
+    "responseId": "doc_muz5f3xa_8f153yvq9",
+    "sessionId": "sess_alex_01",
+    "candidateId": "doc_muz5f3w3_kyk8kn9ux",
+    "questionId": "q_ds_1",
+    "questionCategory": "Data Structures",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.69,
+    "sentimentProbabilities": {
+      "positive": 0.154,
+      "neutral": 0.692,
+      "negative": 0.154
+    },
+    "sentimentScore": 58,
+    "technicalScore": 94,
+    "relevanceScore": 93,
+    "correctnessScore": 100,
+    "conceptCoverageScore": 100,
+    "completenessScore": 70,
+    "overallAnswerScore": 83,
+    "detectedConcepts": [
+      "hash table",
+      "hash function",
+      "collisions",
+      "chaining",
+      "linked list",
+      "open addressing",
+      "linear probing",
+      "O(1)"
+    ],
+    "missingConcepts": [],
+    "strengths": [
+      "Identified core key concepts including: hash table, hash function, collisions.",
+      "Offered a coherent explanation with adequate fundamental understanding.",
+      "Directly addressed the prompt without drifting off-topic."
+    ],
+    "weaknesses": [],
+    "feedback": "Strong response displaying solid mastery of Data Structures. Covers critical concepts accurately with sound technical explanation.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.362Z",
+    "updatedAt": "2026-10-08T06:21:39.362Z",
+    "id": "doc_muz5f3xe_wabzf469w"
+  },
+  {
+    "_id": "doc_muz5f3xk_1o877iavj",
+    "responseId": "doc_muz5f3xg_73f85607c",
+    "sessionId": "sess_alex_01",
+    "candidateId": "doc_muz5f3w3_kyk8kn9ux",
+    "questionId": "q_hr_1",
+    "questionCategory": "HR/Behavioral",
+    "sentiment": "Positive",
+    "sentimentConfidence": 0.78,
+    "sentimentProbabilities": {
+      "positive": 0.634,
+      "neutral": 0.299,
+      "negative": 0.067
+    },
+    "sentimentScore": 89,
+    "technicalScore": 35,
+    "relevanceScore": 65,
+    "correctnessScore": 20,
+    "conceptCoverageScore": 13,
+    "completenessScore": 70,
+    "overallAnswerScore": 51,
+    "detectedConcepts": [
+      "consensus"
+    ],
+    "missingConcepts": [
+      "collaboration",
+      "active listening",
+      "data-driven",
+      "trade-offs",
+      "alignment",
+      "empathy",
+      "deliverables"
+    ],
+    "strengths": [
+      "Correctly touched upon: consensus.",
+      "Offered a coherent explanation with adequate fundamental understanding."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: collaboration, active listening, data-driven.",
+      "Technical depth could be strengthened by clarifying exact mechanisms and implementation details."
+    ],
+    "feedback": "Needs improvement. The response lacks key technical depth for HR/Behavioral and missed major required concepts (collaboration, active listening).",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.368Z",
+    "updatedAt": "2026-10-08T06:21:39.368Z",
+    "id": "doc_muz5f3xk_1o877iavj"
+  },
+  {
+    "_id": "doc_muz5f3xt_8x55jznxp",
+    "responseId": "doc_muz5f3xq_n4tive2gz",
+    "sessionId": "sess_priya_02",
+    "candidateId": "doc_muz5f3w7_gluiqltqc",
+    "questionId": "q_prog_1",
+    "questionCategory": "Programming",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.69,
+    "sentimentProbabilities": {
+      "positive": 0.154,
+      "neutral": 0.692,
+      "negative": 0.154
+    },
+    "sentimentScore": 58,
+    "technicalScore": 77,
+    "relevanceScore": 70,
+    "correctnessScore": 83,
+    "conceptCoverageScore": 89,
+    "completenessScore": 50,
+    "overallAnswerScore": 71,
+    "detectedConcepts": [
+      "event loop",
+      "libuv",
+      "single thread",
+      "timers",
+      "poll",
+      "check",
+      "microtasks",
+      "promises"
+    ],
+    "missingConcepts": [
+      "non-blocking"
+    ],
+    "strengths": [
+      "Identified core key concepts including: event loop, libuv, single thread."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: non-blocking."
+    ],
+    "feedback": "Good response demonstrating clear understanding of Programming. Touches upon the primary principles; could expand on non-blocking.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.377Z",
+    "updatedAt": "2026-10-08T06:21:39.377Z",
+    "id": "doc_muz5f3xt_8x55jznxp"
+  },
+  {
+    "_id": "doc_muz5f3xy_xjx1rr0qw",
+    "responseId": "doc_muz5f3xv_asy23nqtf",
+    "sessionId": "sess_priya_02",
+    "candidateId": "doc_muz5f3w7_gluiqltqc",
+    "questionId": "q_db_1",
+    "questionCategory": "Database",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.69,
+    "sentimentProbabilities": {
+      "positive": 0.154,
+      "neutral": 0.692,
+      "negative": 0.154
+    },
+    "sentimentScore": 58,
+    "technicalScore": 88,
+    "relevanceScore": 93,
+    "correctnessScore": 100,
+    "conceptCoverageScore": 88,
+    "completenessScore": 50,
+    "overallAnswerScore": 79,
+    "detectedConcepts": [
+      "anomalies",
+      "1NF",
+      "2NF",
+      "3NF",
+      "atomic values",
+      "partial dependency",
+      "transitive dependency"
+    ],
+    "missingConcepts": [
+      "redundancy"
+    ],
+    "strengths": [
+      "Identified core key concepts including: anomalies, 1NF, 2NF.",
+      "Directly addressed the prompt without drifting off-topic."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: redundancy.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples."
+    ],
+    "feedback": "Strong response displaying solid mastery of Database. Covers critical concepts accurately with sound technical explanation.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.383Z",
+    "updatedAt": "2026-10-08T06:21:39.383Z",
+    "id": "doc_muz5f3xy_xjx1rr0qw"
+  },
+  {
+    "_id": "doc_muz5f3y4_fqw97f0n4",
+    "responseId": "doc_muz5f3y1_aknqei3zj",
+    "sessionId": "sess_priya_02",
+    "candidateId": "doc_muz5f3w7_gluiqltqc",
+    "questionId": "q_net_1",
+    "questionCategory": "Networking",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.69,
+    "sentimentProbabilities": {
+      "positive": 0.154,
+      "neutral": 0.692,
+      "negative": 0.154
+    },
+    "sentimentScore": 58,
+    "technicalScore": 75,
+    "relevanceScore": 65,
+    "correctnessScore": 94,
+    "conceptCoverageScore": 67,
+    "completenessScore": 50,
+    "overallAnswerScore": 70,
+    "detectedConcepts": [
+      "TCP handshake",
+      "SYN",
+      "ACK",
+      "TLS handshake",
+      "certificate",
+      "port 443"
+    ],
+    "missingConcepts": [
+      "DNS resolution",
+      "symmetric key",
+      "encrypted"
+    ],
+    "strengths": [
+      "Correctly touched upon: TCP handshake, SYN, ACK, TLS handshake, certificate, port 443."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: DNS resolution, symmetric key, encrypted."
+    ],
+    "feedback": "Good response demonstrating clear understanding of Networking. Touches upon the primary principles; could expand on DNS resolution.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.388Z",
+    "updatedAt": "2026-10-08T06:21:39.388Z",
+    "id": "doc_muz5f3y4_fqw97f0n4"
+  },
+  {
+    "_id": "doc_muz5f3y9_v7epge2d2",
+    "responseId": "doc_muz5f3y6_45yznvbx4",
+    "sessionId": "sess_priya_02",
+    "candidateId": "doc_muz5f3w7_gluiqltqc",
+    "questionId": "q_os_1",
+    "questionCategory": "Operating Systems",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.69,
+    "sentimentProbabilities": {
+      "positive": 0.154,
+      "neutral": 0.692,
+      "negative": 0.154
+    },
+    "sentimentScore": 58,
+    "technicalScore": 79,
+    "relevanceScore": 85,
+    "correctnessScore": 90,
+    "conceptCoverageScore": 75,
+    "completenessScore": 50,
+    "overallAnswerScore": 73,
+    "detectedConcepts": [
+      "process",
+      "thread",
+      "memory space",
+      "context switching",
+      "PCB",
+      "cache overhead"
+    ],
+    "missingConcepts": [
+      "shared heap",
+      "registers"
+    ],
+    "strengths": [
+      "Identified core key concepts including: process, thread, memory space.",
+      "Directly addressed the prompt without drifting off-topic."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: shared heap, registers."
+    ],
+    "feedback": "Good response demonstrating clear understanding of Operating Systems. Touches upon the primary principles; could expand on shared heap.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.393Z",
+    "updatedAt": "2026-10-08T06:21:39.393Z",
+    "id": "doc_muz5f3y9_v7epge2d2"
+  },
+  {
+    "_id": "doc_muz5f3ye_ris1o86m0",
+    "responseId": "doc_muz5f3yb_0jfe5falt",
+    "sessionId": "sess_priya_02",
+    "candidateId": "doc_muz5f3w7_gluiqltqc",
+    "questionId": "q_ds_1",
+    "questionCategory": "Data Structures",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.69,
+    "sentimentProbabilities": {
+      "positive": 0.154,
+      "neutral": 0.692,
+      "negative": 0.154
+    },
+    "sentimentScore": 58,
+    "technicalScore": 88,
+    "relevanceScore": 93,
+    "correctnessScore": 100,
+    "conceptCoverageScore": 88,
+    "completenessScore": 50,
+    "overallAnswerScore": 79,
+    "detectedConcepts": [
+      "hash table",
+      "hash function",
+      "collisions",
+      "chaining",
+      "linked list",
+      "open addressing",
+      "linear probing"
+    ],
+    "missingConcepts": [
+      "O(1)"
+    ],
+    "strengths": [
+      "Identified core key concepts including: hash table, hash function, collisions.",
+      "Directly addressed the prompt without drifting off-topic."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: O(1).",
+      "Response is brief; could benefit from more in-depth architectural or practical examples."
+    ],
+    "feedback": "Strong response displaying solid mastery of Data Structures. Covers critical concepts accurately with sound technical explanation.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.398Z",
+    "updatedAt": "2026-10-08T06:21:39.398Z",
+    "id": "doc_muz5f3ye_ris1o86m0"
+  },
+  {
+    "_id": "doc_muz5f3yj_bd3uosfec",
+    "responseId": "doc_muz5f3yg_zrn4fjsot",
+    "sessionId": "sess_priya_02",
+    "candidateId": "doc_muz5f3w7_gluiqltqc",
+    "questionId": "q_hr_1",
+    "questionCategory": "HR/Behavioral",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.65,
+    "sentimentProbabilities": {
+      "positive": 0.328,
+      "neutral": 0.549,
+      "negative": 0.123
+    },
+    "sentimentScore": 64,
+    "technicalScore": 35,
+    "relevanceScore": 65,
+    "correctnessScore": 24,
+    "conceptCoverageScore": 13,
+    "completenessScore": 58,
+    "overallAnswerScore": 44,
+    "detectedConcepts": [
+      "trade-offs"
+    ],
+    "missingConcepts": [
+      "collaboration",
+      "active listening",
+      "data-driven",
+      "alignment",
+      "empathy",
+      "consensus",
+      "deliverables"
+    ],
+    "strengths": [
+      "Correctly touched upon: trade-offs."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: collaboration, active listening, data-driven.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples.",
+      "Technical depth could be strengthened by clarifying exact mechanisms and implementation details."
+    ],
+    "feedback": "Needs improvement. The response lacks key technical depth for HR/Behavioral and missed major required concepts (collaboration, active listening).",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.403Z",
+    "updatedAt": "2026-10-08T06:21:39.403Z",
+    "id": "doc_muz5f3yj_bd3uosfec"
+  },
+  {
+    "_id": "doc_muz5f3z3_0s75z7cw8",
+    "responseId": "doc_muz5f3yq_kb17hwh96",
+    "sessionId": "sess_marcus_03",
+    "candidateId": "doc_muz5f3wc_in2bzm337",
+    "questionId": "q_aiml_1",
+    "questionCategory": "AI/ML",
+    "sentiment": "Positive",
+    "sentimentConfidence": 0.78,
+    "sentimentProbabilities": {
+      "positive": 0.482,
+      "neutral": 0.423,
+      "negative": 0.095
+    },
+    "sentimentScore": 84,
+    "technicalScore": 88,
+    "relevanceScore": 78,
+    "correctnessScore": 100,
+    "conceptCoverageScore": 86,
+    "completenessScore": 70,
+    "overallAnswerScore": 87,
+    "detectedConcepts": [
+      "attention mechanism",
+      "query key value",
+      "dot product",
+      "parallelization",
+      "vanishing gradient",
+      "transformers"
+    ],
+    "missingConcepts": [
+      "long sequences"
+    ],
+    "strengths": [
+      "Identified core key concepts including: attention mechanism, query key value, dot product.",
+      "Offered a coherent explanation with adequate fundamental understanding."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: long sequences."
+    ],
+    "feedback": "Strong response displaying solid mastery of AI/ML. Covers critical concepts accurately with sound technical explanation.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.423Z",
+    "updatedAt": "2026-10-08T06:21:39.423Z",
+    "id": "doc_muz5f3z3_0s75z7cw8"
+  },
+  {
+    "_id": "doc_muz5f3za_t1dy6uikk",
+    "responseId": "doc_muz5f3z6_d5c6nd0yp",
+    "sessionId": "sess_marcus_03",
+    "candidateId": "doc_muz5f3wc_in2bzm337",
+    "questionId": "q_gen_1",
+    "questionCategory": "General Technical",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.69,
+    "sentimentProbabilities": {
+      "positive": 0.154,
+      "neutral": 0.692,
+      "negative": 0.154
+    },
+    "sentimentScore": 58,
+    "technicalScore": 83,
+    "relevanceScore": 78,
+    "correctnessScore": 96,
+    "conceptCoverageScore": 86,
+    "completenessScore": 50,
+    "overallAnswerScore": 76,
+    "detectedConcepts": [
+      "monolith",
+      "microservices",
+      "distributed transactions",
+      "saga pattern",
+      "compensating transactions",
+      "eventual consistency"
+    ],
+    "missingConcepts": [
+      "message brokers"
+    ],
+    "strengths": [
+      "Identified core key concepts including: monolith, microservices, distributed transactions."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: message brokers.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples."
+    ],
+    "feedback": "Good response demonstrating clear understanding of General Technical. Touches upon the primary principles; could expand on message brokers.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.430Z",
+    "updatedAt": "2026-10-08T06:21:39.430Z",
+    "id": "doc_muz5f3za_t1dy6uikk"
+  },
+  {
+    "_id": "doc_muz5f3ze_wogwr3nep",
+    "responseId": "doc_muz5f3zc_gw5rqyjjk",
+    "sessionId": "sess_marcus_03",
+    "candidateId": "doc_muz5f3wc_in2bzm337",
+    "questionId": "q_db_1",
+    "questionCategory": "Database",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.69,
+    "sentimentProbabilities": {
+      "positive": 0.154,
+      "neutral": 0.692,
+      "negative": 0.154
+    },
+    "sentimentScore": 58,
+    "technicalScore": 84,
+    "relevanceScore": 85,
+    "correctnessScore": 94,
+    "conceptCoverageScore": 88,
+    "completenessScore": 50,
+    "overallAnswerScore": 76,
+    "detectedConcepts": [
+      "redundancy",
+      "anomalies",
+      "1NF",
+      "2NF",
+      "3NF",
+      "partial dependency",
+      "transitive dependency"
+    ],
+    "missingConcepts": [
+      "atomic values"
+    ],
+    "strengths": [
+      "Identified core key concepts including: redundancy, anomalies, 1NF.",
+      "Directly addressed the prompt without drifting off-topic."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: atomic values.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples."
+    ],
+    "feedback": "Good response demonstrating clear understanding of Database. Touches upon the primary principles; could expand on atomic values.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.434Z",
+    "updatedAt": "2026-10-08T06:21:39.434Z",
+    "id": "doc_muz5f3ze_wogwr3nep"
+  },
+  {
+    "_id": "doc_muz5f3zj_cudwn1h40",
+    "responseId": "doc_muz5f3zh_hfh5s8van",
+    "sessionId": "sess_marcus_03",
+    "candidateId": "doc_muz5f3wc_in2bzm337",
+    "questionId": "q_net_1",
+    "questionCategory": "Networking",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.69,
+    "sentimentProbabilities": {
+      "positive": 0.154,
+      "neutral": 0.692,
+      "negative": 0.154
+    },
+    "sentimentScore": 58,
+    "technicalScore": 52,
+    "relevanceScore": 65,
+    "correctnessScore": 50,
+    "conceptCoverageScore": 44,
+    "completenessScore": 50,
+    "overallAnswerScore": 54,
+    "detectedConcepts": [
+      "TCP handshake",
+      "TLS handshake",
+      "certificate",
+      "encrypted"
+    ],
+    "missingConcepts": [
+      "DNS resolution",
+      "SYN",
+      "ACK",
+      "symmetric key",
+      "port 443"
+    ],
+    "strengths": [
+      "Correctly touched upon: TCP handshake, TLS handshake, certificate, encrypted."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: DNS resolution, SYN, ACK.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples.",
+      "Technical depth could be strengthened by clarifying exact mechanisms and implementation details."
+    ],
+    "feedback": "Satisfactory answer with partial concept coverage. Understands the high-level concept but missed essential details like DNS resolution and SYN.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.439Z",
+    "updatedAt": "2026-10-08T06:21:39.439Z",
+    "id": "doc_muz5f3zj_cudwn1h40"
+  },
+  {
+    "_id": "doc_muz5f3zo_ppc2eaj13",
+    "responseId": "doc_muz5f3zm_wint57t6g",
+    "sessionId": "sess_marcus_03",
+    "candidateId": "doc_muz5f3wc_in2bzm337",
+    "questionId": "q_os_1",
+    "questionCategory": "Operating Systems",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.69,
+    "sentimentProbabilities": {
+      "positive": 0.154,
+      "neutral": 0.692,
+      "negative": 0.154
+    },
+    "sentimentScore": 58,
+    "technicalScore": 67,
+    "relevanceScore": 85,
+    "correctnessScore": 76,
+    "conceptCoverageScore": 50,
+    "completenessScore": 50,
+    "overallAnswerScore": 64,
+    "detectedConcepts": [
+      "process",
+      "thread",
+      "context switching",
+      "PCB"
+    ],
+    "missingConcepts": [
+      "memory space",
+      "shared heap",
+      "registers",
+      "cache overhead"
+    ],
+    "strengths": [
+      "Correctly touched upon: process, thread, context switching, PCB.",
+      "Directly addressed the prompt without drifting off-topic."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: memory space, shared heap, registers.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples."
+    ],
+    "feedback": "Satisfactory answer with partial concept coverage. Understands the high-level concept but missed essential details like memory space and shared heap.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.444Z",
+    "updatedAt": "2026-10-08T06:21:39.444Z",
+    "id": "doc_muz5f3zo_ppc2eaj13"
+  },
+  {
+    "_id": "doc_muz5f3zy_uiahjgp0p",
+    "responseId": "doc_muz5f3zw_rmsya8uej",
+    "sessionId": "sess_jordan_04",
+    "candidateId": "doc_muz5f3wg_6wz9kjgau",
+    "questionId": "q_prog_1",
+    "questionCategory": "Programming",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.69,
+    "sentimentProbabilities": {
+      "positive": 0.154,
+      "neutral": 0.692,
+      "negative": 0.154
+    },
+    "sentimentScore": 58,
+    "technicalScore": 60,
+    "relevanceScore": 78,
+    "correctnessScore": 64,
+    "conceptCoverageScore": 44,
+    "completenessScore": 50,
+    "overallAnswerScore": 59,
+    "detectedConcepts": [
+      "event loop",
+      "single thread",
+      "timers",
+      "poll"
+    ],
+    "missingConcepts": [
+      "libuv",
+      "non-blocking",
+      "check",
+      "microtasks",
+      "promises"
+    ],
+    "strengths": [
+      "Correctly touched upon: event loop, single thread, timers, poll."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: libuv, non-blocking, check.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples."
+    ],
+    "feedback": "Satisfactory answer with partial concept coverage. Understands the high-level concept but missed essential details like libuv and non-blocking.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.454Z",
+    "updatedAt": "2026-10-08T06:21:39.454Z",
+    "id": "doc_muz5f3zy_uiahjgp0p"
+  },
+  {
+    "_id": "doc_muz5f404_g00il76mi",
+    "responseId": "doc_muz5f401_ngwmdabt8",
+    "sessionId": "sess_jordan_04",
+    "candidateId": "doc_muz5f3wg_6wz9kjgau",
+    "questionId": "q_db_1",
+    "questionCategory": "Database",
+    "sentiment": "Neutral",
+    "sentimentConfidence": 0.69,
+    "sentimentProbabilities": {
+      "positive": 0.154,
+      "neutral": 0.692,
+      "negative": 0.154
+    },
+    "sentimentScore": 58,
+    "technicalScore": 33,
+    "relevanceScore": 70,
+    "correctnessScore": 27,
+    "conceptCoverageScore": 13,
+    "completenessScore": 30,
+    "overallAnswerScore": 41,
+    "detectedConcepts": [
+      "anomalies"
+    ],
+    "missingConcepts": [
+      "redundancy",
+      "1NF",
+      "2NF",
+      "3NF",
+      "atomic values",
+      "partial dependency",
+      "transitive dependency"
+    ],
+    "strengths": [
+      "Correctly touched upon: anomalies."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: redundancy, 1NF, 2NF.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples.",
+      "Technical depth could be strengthened by clarifying exact mechanisms and implementation details."
+    ],
+    "feedback": "Needs improvement. The response lacks key technical depth for Database and missed major required concepts (redundancy, 1NF).",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.460Z",
+    "updatedAt": "2026-10-08T06:21:39.460Z",
+    "id": "doc_muz5f404_g00il76mi"
+  },
+  {
+    "_id": "doc_muz5f409_upwe9xevl",
+    "responseId": "doc_muz5f406_f237qfqlo",
+    "sessionId": "sess_jordan_04",
+    "candidateId": "doc_muz5f3wg_6wz9kjgau",
+    "questionId": "q_net_1",
+    "questionCategory": "Networking",
+    "sentiment": "Negative",
+    "sentimentConfidence": 0.91,
+    "sentimentProbabilities": {
+      "positive": 0.017,
+      "neutral": 0.074,
+      "negative": 0.909
+    },
+    "sentimentScore": 14,
+    "technicalScore": 18,
+    "relevanceScore": 20,
+    "correctnessScore": 15,
+    "conceptCoverageScore": 0,
+    "completenessScore": 50,
+    "overallAnswerScore": 17,
+    "detectedConcepts": [],
+    "missingConcepts": [
+      "DNS resolution",
+      "TCP handshake",
+      "SYN",
+      "ACK",
+      "TLS handshake",
+      "certificate",
+      "symmetric key",
+      "port 443",
+      "encrypted"
+    ],
+    "strengths": [],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: DNS resolution, TCP handshake, SYN.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples.",
+      "Technical depth could be strengthened by clarifying exact mechanisms and implementation details."
+    ],
+    "feedback": "Needs improvement. The response lacks key technical depth for Networking and missed major required concepts (DNS resolution, TCP handshake).",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.465Z",
+    "updatedAt": "2026-10-08T06:21:39.465Z",
+    "id": "doc_muz5f409_upwe9xevl"
+  },
+  {
+    "_id": "doc_muz5f40e_y5fxuxagu",
+    "responseId": "doc_muz5f40c_kusnw0d7r",
+    "sessionId": "sess_jordan_04",
+    "candidateId": "doc_muz5f3wg_6wz9kjgau",
+    "questionId": "q_os_1",
+    "questionCategory": "Operating Systems",
+    "sentiment": "Negative",
+    "sentimentConfidence": 0.75,
+    "sentimentProbabilities": {
+      "positive": 0.056,
+      "neutral": 0.249,
+      "negative": 0.695
+    },
+    "sentimentScore": 23,
+    "technicalScore": 51,
+    "relevanceScore": 85,
+    "correctnessScore": 41,
+    "conceptCoverageScore": 38,
+    "completenessScore": 54,
+    "overallAnswerScore": 43,
+    "detectedConcepts": [
+      "process",
+      "thread",
+      "context switching"
+    ],
+    "missingConcepts": [
+      "memory space",
+      "shared heap",
+      "PCB",
+      "registers",
+      "cache overhead"
+    ],
+    "strengths": [
+      "Correctly touched upon: process, thread, context switching.",
+      "Directly addressed the prompt without drifting off-topic."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: memory space, shared heap, PCB.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples.",
+      "Technical depth could be strengthened by clarifying exact mechanisms and implementation details."
+    ],
+    "feedback": "Satisfactory answer with partial concept coverage. Understands the high-level concept but missed essential details like memory space and shared heap.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.470Z",
+    "updatedAt": "2026-10-08T06:21:39.470Z",
+    "id": "doc_muz5f40e_y5fxuxagu"
+  },
+  {
+    "_id": "doc_muz5f40j_h5dr00gqy",
+    "responseId": "doc_muz5f40h_ap3ly0zyv",
+    "sessionId": "sess_jordan_04",
+    "candidateId": "doc_muz5f3wg_6wz9kjgau",
+    "questionId": "q_ds_1",
+    "questionCategory": "Data Structures",
+    "sentiment": "Positive",
+    "sentimentConfidence": 0.78,
+    "sentimentProbabilities": {
+      "positive": 0.425,
+      "neutral": 0.47,
+      "negative": 0.105
+    },
+    "sentimentScore": 82,
+    "technicalScore": 50,
+    "relevanceScore": 78,
+    "correctnessScore": 50,
+    "conceptCoverageScore": 38,
+    "completenessScore": 30,
+    "overallAnswerScore": 60,
+    "detectedConcepts": [
+      "hash table",
+      "collisions",
+      "chaining"
+    ],
+    "missingConcepts": [
+      "hash function",
+      "linked list",
+      "open addressing",
+      "linear probing",
+      "O(1)"
+    ],
+    "strengths": [
+      "Correctly touched upon: hash table, collisions, chaining."
+    ],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: hash function, linked list, open addressing.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples.",
+      "Technical depth could be strengthened by clarifying exact mechanisms and implementation details."
+    ],
+    "feedback": "Satisfactory answer with partial concept coverage. Understands the high-level concept but missed essential details like hash function and linked list.",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.475Z",
+    "updatedAt": "2026-10-08T06:21:39.475Z",
+    "id": "doc_muz5f40j_h5dr00gqy"
+  },
+  {
+    "_id": "doc_muz5f40p_r3t97ibyi",
+    "responseId": "doc_muz5f40m_kun7yr7ua",
+    "sessionId": "sess_jordan_04",
+    "candidateId": "doc_muz5f3wg_6wz9kjgau",
+    "questionId": "q_hr_1",
+    "questionCategory": "HR/Behavioral",
+    "sentiment": "Negative",
+    "sentimentConfidence": 0.91,
+    "sentimentProbabilities": {
+      "positive": 0.017,
+      "neutral": 0.074,
+      "negative": 0.909
+    },
+    "sentimentScore": 14,
+    "technicalScore": 21,
+    "relevanceScore": 35,
+    "correctnessScore": 15,
+    "conceptCoverageScore": 0,
+    "completenessScore": 50,
+    "overallAnswerScore": 19,
+    "detectedConcepts": [],
+    "missingConcepts": [
+      "collaboration",
+      "active listening",
+      "data-driven",
+      "trade-offs",
+      "alignment",
+      "empathy",
+      "consensus",
+      "deliverables"
+    ],
+    "strengths": [],
+    "weaknesses": [
+      "Omitted expected key terminology/concepts: collaboration, active listening, data-driven.",
+      "Response is brief; could benefit from more in-depth architectural or practical examples.",
+      "Technical depth could be strengthened by clarifying exact mechanisms and implementation details."
+    ],
+    "feedback": "Needs improvement. The response lacks key technical depth for HR/Behavioral and missed major required concepts (collaboration, active listening).",
+    "pipelineUsed": "Built-in NLP Pipeline (Lexical & VADER Fallback Engine)",
+    "createdAt": "2026-10-08T06:21:39.481Z",
+    "updatedAt": "2026-10-08T06:21:39.481Z",
+    "id": "doc_muz5f40p_r3t97ibyi"
+  }
+]
