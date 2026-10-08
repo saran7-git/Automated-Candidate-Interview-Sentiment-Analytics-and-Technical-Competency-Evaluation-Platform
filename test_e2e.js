@@ -23,11 +23,26 @@ async function testAll() {
   console.log('Admin login:', aLoginData.success, '| User:', aLoginData.user?.name);
   const token = aLoginData.token;
 
-  console.log('\n--- 4. Testing Candidate Login ---');
+  console.log('\n--- 4. Testing Candidate Dynamic Registration & Login ---');
+  const tempEmail = `candidate.${Date.now()}@example.com`;
+  const regRes = await fetch(baseApi + '/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: 'Test Candidate',
+      email: tempEmail,
+      password: 'Candidate@123',
+      role: 'candidate',
+      skills: ['React', 'Node.js']
+    })
+  });
+  const regData = await regRes.json();
+  console.log('Candidate registration:', regData.success, '| User:', regData.user?.name);
+
   const cLogin = await fetch(baseApi + '/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: 'candidate@interview.ai', password: 'Candidate@123' })
+    body: JSON.stringify({ email: tempEmail, password: 'Candidate@123' })
   });
   const cLoginData = await cLogin.json();
   console.log('Candidate login:', cLoginData.success, '| User:', cLoginData.user?.name);

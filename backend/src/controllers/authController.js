@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Candidate = require('../models/Candidate');
+const Interview = require('../models/Interview');
+const InterviewSession = require('../models/InterviewSession');
 const { JWT_SECRET } = require('../middleware/auth');
 
 exports.register = async (req, res, next) => {
@@ -36,6 +38,16 @@ exports.register = async (req, res, next) => {
         phone: phone || '',
         skills: Array.isArray(skills) ? skills : []
       });
+
+      // Automatically assign the first active interview template to the new candidate
+      const interviews = await Interview.find();
+      if (interviews.length > 0) {
+        await InterviewSession.create({
+          candidateId: candidateProfile._id || candidateProfile.id,
+          interviewId: interviews[0]._id || interviews[0].id,
+          status: 'pending'
+        });
+      }
     }
 
     const token = jwt.sign(

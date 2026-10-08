@@ -301,18 +301,31 @@ npm run start:frontend
 
 ---
 
-## 7. Demo Login Credentials
+## 7. Account Management & Database Administration
 
-The application includes single-click demo login buttons directly on the Login page (`http://localhost:5173/login`):
+The platform is designed to maintain real user accounts with password hashing (bcrypt) and JWT session tokens. All demo data has been removed to provide a clean database.
 
-| Role | Email | Password | Full Name |
+### System Administrator Access
+The system initializes with a default administrator account:
+| Role | Email | Password | Access Level |
 | :--- | :--- | :--- | :--- |
-| **Admin / Recruiter** | `admin@interview.ai` | `Admin@123` | Dr. Sarah Jenkins (Head of Talent) |
-| **Candidate 1** | `candidate@interview.ai` | `Candidate@123` | Priya Sharma |
-| **Candidate 2** | `alex@interview.ai` | `Candidate@123` | Alex Rivera |
-| **Candidate 3** | `marcus@interview.ai` | `Candidate@123` | Marcus Chen |
-| **Candidate 4** | `jordan@interview.ai` | `Candidate@123` | Jordan Taylor |
-| **Candidate 5** | `samira@interview.ai` | `Candidate@123` | Samira Khan |
+| **System Admin / Recruiter** | `admin@interview.ai` | `Admin@123` | Full dashboard, candidate directory, report dossier, and interview management |
+
+### Candidate Registration Flow
+1. Navigate to `http://localhost:5173/register` or click **"Create New Candidate Account"** on the login page.
+2. Enter your Name, Email, Password, and Technical Skills.
+3. Upon registration, an account is created in the database and automatically enrolled in the active technical interview template.
+4. Candidates can log in anytime at `http://localhost:5173/login` using their registered email and password to start or continue interviews.
+
+### Database Maintenance Commands
+From the `backend` directory:
+```bash
+# Initialize clean database baseline (Admin account & interview question bank)
+npm run db:init
+
+# Reset database (purges candidate entries and leaves clean admin + templates)
+npm run db:reset
+```
 
 ---
 

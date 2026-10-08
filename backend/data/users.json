@@ -1,62 +1,12 @@
 [
   {
-    "_id": "doc_muz5f3vt_tm4wxasw3",
-    "name": "Dr. Sarah Jenkins (Head of Talent)",
+    "_id": "admin_master_sys",
+    "name": "System Administrator",
     "email": "admin@interview.ai",
-    "passwordHash": "$2a$10$vbc8AQWlBqt.8N3cpx1WGuisOkbpc6O5TQd90TupvLQKBse1Tahsi",
+    "passwordHash": "$2a$10$0/Tsmc1GAlnqRdjX7dqMU.wPuj1G/b.BLQuVEE4wB7Qs7Zl7iycym",
     "role": "admin",
-    "createdAt": "2026-10-08T06:21:39.305Z",
-    "updatedAt": "2026-10-08T06:21:39.306Z",
-    "id": "doc_muz5f3vt_tm4wxasw3"
-  },
-  {
-    "_id": "doc_muz5f3w1_avqmqj6nt",
-    "name": "Alex Rivera",
-    "email": "alex@interview.ai",
-    "passwordHash": "$2a$10$vbc8AQWlBqt.8N3cpx1WGu9jhk/96nyzevlDQafbz.1hc10pu6ZNa",
-    "role": "candidate",
-    "createdAt": "2026-10-08T06:21:39.313Z",
-    "updatedAt": "2026-10-08T06:21:39.313Z",
-    "id": "doc_muz5f3w1_avqmqj6nt"
-  },
-  {
-    "_id": "doc_muz5f3w5_vacjmbvxq",
-    "name": "Priya Sharma",
-    "email": "candidate@interview.ai",
-    "passwordHash": "$2a$10$vbc8AQWlBqt.8N3cpx1WGu9jhk/96nyzevlDQafbz.1hc10pu6ZNa",
-    "role": "candidate",
-    "createdAt": "2026-10-08T06:21:39.317Z",
-    "updatedAt": "2026-10-08T06:21:39.317Z",
-    "id": "doc_muz5f3w5_vacjmbvxq"
-  },
-  {
-    "_id": "doc_muz5f3w9_och5rwdnm",
-    "name": "Marcus Chen",
-    "email": "marcus@interview.ai",
-    "passwordHash": "$2a$10$vbc8AQWlBqt.8N3cpx1WGu9jhk/96nyzevlDQafbz.1hc10pu6ZNa",
-    "role": "candidate",
-    "createdAt": "2026-10-08T06:21:39.321Z",
-    "updatedAt": "2026-10-08T06:21:39.321Z",
-    "id": "doc_muz5f3w9_och5rwdnm"
-  },
-  {
-    "_id": "doc_muz5f3we_ks53q4hs3",
-    "name": "Jordan Taylor",
-    "email": "jordan@interview.ai",
-    "passwordHash": "$2a$10$vbc8AQWlBqt.8N3cpx1WGu9jhk/96nyzevlDQafbz.1hc10pu6ZNa",
-    "role": "candidate",
-    "createdAt": "2026-10-08T06:21:39.326Z",
-    "updatedAt": "2026-10-08T06:21:39.326Z",
-    "id": "doc_muz5f3we_ks53q4hs3"
-  },
-  {
-    "_id": "doc_muz5f3wi_194dad8lx",
-    "name": "Samira Khan",
-    "email": "samira@interview.ai",
-    "passwordHash": "$2a$10$vbc8AQWlBqt.8N3cpx1WGu9jhk/96nyzevlDQafbz.1hc10pu6ZNa",
-    "role": "candidate",
-    "createdAt": "2026-10-08T06:21:39.330Z",
-    "updatedAt": "2026-10-08T06:21:39.330Z",
-    "id": "doc_muz5f3wi_194dad8lx"
+    "createdAt": "2026-10-08T09:08:06.108Z",
+    "updatedAt": "2026-10-08T09:08:06.109Z",
+    "id": "admin_master_sys"
   }
 ]

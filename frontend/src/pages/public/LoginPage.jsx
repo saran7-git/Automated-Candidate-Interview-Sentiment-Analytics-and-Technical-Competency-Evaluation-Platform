@@ -95,7 +95,13 @@ const LoginPage = () => {
             </button>
             <button
               type="button"
-              onClick={() => { setRole('candidate'); setEmail('candidate@interview.ai'); setPassword('Candidate@123'); }}
+              onClick={() => {
+                setRole('candidate');
+                if (email === 'admin@interview.ai') {
+                  setEmail('');
+                  setPassword('');
+                }
+              }}
               className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-lg transition-all ${
                 role === 'candidate'
                   ? 'bg-white text-indigo-700 shadow-sm'
@@ -106,6 +112,15 @@ const LoginPage = () => {
               Candidate
             </button>
           </div>
+
+          {role === 'candidate' && (
+            <div className="mb-4 p-3 bg-indigo-50/70 border border-indigo-100 rounded-xl text-xs text-indigo-800 flex items-center justify-between">
+              <span>Candidate account login</span>
+              <Link to="/register" className="font-bold underline text-indigo-600 hover:text-indigo-800">
+                Register New Account &rarr;
+              </Link>
+            </div>
+          )}
 
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
@@ -120,7 +135,7 @@ const LoginPage = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={role === 'admin' ? 'admin@interview.ai' : 'candidate@interview.ai'}
+                  placeholder={role === 'admin' ? 'admin@interview.ai' : 'you@domain.com'}
                   className="block w-full pl-10 pr-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition"
                   required
                 />
@@ -162,40 +177,26 @@ const LoginPage = () => {
             </button>
           </form>
 
-          {/* Quick Demo Logins */}
-          <div className="mt-6 pt-6 border-t border-slate-100">
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 mb-2.5">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-              <span>Instant 1-Click Demo Logins</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2 text-left">
-              <button
-                type="button"
-                onClick={() => handleQuickDemo('admin@interview.ai', 'Admin@123', 'admin')}
-                className="p-2.5 bg-indigo-50/60 hover:bg-indigo-100/70 border border-indigo-200/60 rounded-xl transition group"
-              >
-                <div className="text-xs font-bold text-indigo-900 flex items-center gap-1">
-                  <span>Demo Admin</span>
-                </div>
-                <div className="text-[10px] text-slate-500">Dr. Sarah Jenkins</div>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickDemo('candidate@interview.ai', 'Candidate@123', 'candidate')}
-                className="p-2.5 bg-emerald-50/60 hover:bg-emerald-100/70 border border-emerald-200/60 rounded-xl transition group"
-              >
-                <div className="text-xs font-bold text-emerald-900 flex items-center gap-1">
-                  <span>Demo Candidate</span>
-                </div>
-                <div className="text-[10px] text-slate-500">Priya Sharma</div>
-              </button>
-            </div>
+          {/* Quick Admin Helper */}
+          <div className="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span className="text-slate-500">Need admin access?</span>
+            <button
+              type="button"
+              onClick={() => {
+                setRole('admin');
+                setEmail('admin@interview.ai');
+                setPassword('Admin@123');
+              }}
+              className="font-semibold text-indigo-600 hover:text-indigo-800 underline decoration-indigo-300"
+            >
+              Fill Default Admin (admin@interview.ai)
+            </button>
           </div>
 
-          <div className="mt-6 text-center text-xs text-slate-500">
+          <div className="mt-5 text-center text-xs text-slate-500">
             Don't have an account?{' '}
-            <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-800">
-              Create an account
+            <Link to="/register" className="font-bold text-indigo-600 hover:text-indigo-800">
+              Create New Candidate Account
             </Link>
           </div>
         </div>

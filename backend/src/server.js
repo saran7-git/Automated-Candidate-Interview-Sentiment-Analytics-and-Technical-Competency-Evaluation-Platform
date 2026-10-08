@@ -63,14 +63,9 @@ async function startServer() {
   try {
     await connectDB();
 
-    // Check if initial seeding is needed
-    const User = require('./models/User');
-    const userCount = await User.countDocuments();
-    if (userCount === 0) {
-      console.log('[Server] Database is empty. Running initial seed data...');
-      const seed = require('./utils/seedData');
-      await seed();
-    }
+    // Initialize database configuration and ensure baseline admin / templates
+    const initDatabase = require('./utils/initDatabase');
+    await initDatabase();
 
     app.listen(PORT, () => {
       console.log('================================================================');
