@@ -4,8 +4,12 @@ import { sessionAPI, responseAPI } from '../../api/client';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Modal from '../../components/Modal';
 import ProctoringCamera from '../../components/ProctoringCamera';
+import ProctoringWarningOverlay from '../../components/ProctoringWarningOverlay';
 import SpeechToTextButton from '../../components/SpeechToTextButton';
+import CodeEditor from '../../components/CodeEditor';
+import MCQQuestionView from '../../components/MCQQuestionView';
 import { useMediaStream } from '../../hooks/useMediaStream';
+import { useProctoringEngine } from '../../hooks/useProctoringEngine';
 import { useToast } from '../../context/ToastContext';
 import {
   Clock,
@@ -16,12 +20,24 @@ import {
   HelpCircle,
   Sparkles,
   Check,
-  RotateCcw,
-  Camera,
+  CheckCircle2,
+  Code2,
+  Cpu,
   Mic,
+  HeartHandshake,
   ShieldCheck,
+  ShieldAlert,
   Volume2
 } from 'lucide-react';
+
+const ROUND_CONFIGS = [
+  { id: 'mcq', label: '1. MCQ Round', icon: Check, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
+  { id: 'technical', label: '2. Technical Round', icon: Cpu, color: 'text-blue-600 bg-blue-50 border-blue-200' },
+  { id: 'aptitude', label: '3. Aptitude Round', icon: Sparkles, color: 'text-amber-600 bg-amber-50 border-amber-200' },
+  { id: 'coding', label: '4. Coding Round', icon: Code2, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
+  { id: 'communication', label: '5. Communication Round', icon: Mic, color: 'text-purple-600 bg-purple-50 border-purple-200' },
+  { id: 'hr', label: '6. HR Final AI', icon: HeartHandshake, color: 'text-rose-600 bg-rose-50 border-rose-200' }
+];
 
 const InterviewSessionPage = () => {
   const { sessionId } = useParams();
@@ -36,8 +52,7 @@ const InterviewSessionPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitStep, setSubmitStep] = useState('');
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-  const [timeLeftSeconds, setTimeLeftSeconds] = useState(1800); // 30 mins default
-  const [warningCount, setWarningCount] = useState(0);
+  const [timeLeftSeconds, setTimeLeftSeconds] = useState(2700); // 45 mins default
 
   // Active camera and microphone stream for the assessment
   const {
@@ -51,23 +66,31 @@ const InterviewSessionPage = () => {
 
   const timerRef = useRef(null);
 
-  // Proctoring: Detect window blur / tab switching
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        setWarningCount((prev) => {
-          const next = prev + 1;
-          warning(`Assessment Alert (${next}): Tab switch detected. Please stay focused on the assessment window.`);
-          return next;
-        });
-      }
-    };
+  // Terminate assessment immediately upon uncorrected malpractice
+  const handleTerminateAssessment = async ({ reason, violationType }) => {
+    try {
+      await sessionAPI.terminate(sessionId, { reason, violationType });
+    } catch (e) {
+      console.warn('Termination API notice:', e.message);
+    }
+    navigate(`/candidate/terminated/${sessionId}`, {
+      state: { reason, violationType }
+    });
+  };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [warning]);
+  // AI Proctoring Engine: Computer Vision Face & Gaze Tracking
+  const {
+    isOutOfFrame,
+    isLookingAway,
+    activeViolation,
+    countdownSeconds,
+    isTerminated
+  } = useProctoringEngine({
+    stream,
+    isCameraActive,
+    onTerminate: handleTerminateAssessment,
+    enabled: !loading && !submitting
+  });
 
   useEffect(() => {
     loadSessionData();
@@ -87,6 +110,11 @@ const InterviewSessionPage = () => {
         return;
       }
 
+      if (sess.status === 'disqualified' || sess.status === 'terminated_malpractice') {
+        navigate(`/candidate/terminated/${sessionId}`);
+        return;
+      }
+
       setSession(sess);
       const qList = sess.interview?.questions || [];
       setQuestions(qList);
@@ -99,7 +127,7 @@ const InterviewSessionPage = () => {
       setAnswers(initialAnswers);
 
       // Initialize timer based on interview duration
-      const durationMins = sess.interview?.duration || 30;
+      const durationMins = sess.interview?.duration || 45;
       setTimeLeftSeconds(durationMins * 60);
 
       // Start timer
@@ -119,7 +147,28 @@ const InterviewSessionPage = () => {
     }
   };
 
+  const getQuestionRound = (q) => {
+    if (!q) return 'technical';
+    if (q.round) return q.round;
+    const cat = (q.category || '').toLowerCase();
+    const title = (q.question || '').toLowerCase();
+    if (q.type === 'coding' || title.includes('two sum') || title.includes('code')) return 'coding';
+    if (q.options && q.options.length > 0) {
+      if (cat.includes('aptitude') || cat.includes('reasoning') || title.includes('microchip') || title.includes('cluster')) {
+        return 'aptitude';
+      }
+      return 'mcq';
+    }
+    if (q.type === 'speech' || cat.includes('communication') || title.includes('verbal') || title.includes('incident')) {
+      return 'communication';
+    }
+    if (cat.includes('hr') || cat.includes('behavioral') || title.includes('disagreement')) return 'hr';
+    return 'technical';
+  };
+
   const currentQuestion = questions[currentIndex];
+  const currentRoundId = getQuestionRound(currentQuestion);
+  const currentRoundConfig = ROUND_CONFIGS.find((r) => r.id === currentRoundId) || ROUND_CONFIGS[1];
   const currentAnswer = currentQuestion ? answers[currentQuestion._id || currentQuestion.id] || '' : '';
 
   const handleAnswerChange = (text) => {
@@ -153,7 +202,7 @@ const InterviewSessionPage = () => {
         candidateAnswer: ansText || ''
       });
     } catch (err) {
-      console.warn('Autosave background failure:', err.message);
+      console.warn('Autosave background notice:', err.message);
     }
   };
 
@@ -182,6 +231,13 @@ const InterviewSessionPage = () => {
     setCurrentIndex(index);
   };
 
+  const handleJumpToRound = (roundId) => {
+    const targetIdx = questions.findIndex((q) => getQuestionRound(q) === roundId);
+    if (targetIdx !== -1) {
+      handleJumpToQuestion(targetIdx);
+    }
+  };
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -193,8 +249,7 @@ const InterviewSessionPage = () => {
     setSubmitting(true);
 
     try {
-      // Step 1: Submitting answers
-      setSubmitStep('Analyzing candidate response...');
+      setSubmitStep('Compiling multi-round assessment submissions...');
       const payloadAnswers = questions.map((q) => {
         const qId = q._id || q.id;
         return {
@@ -203,20 +258,19 @@ const InterviewSessionPage = () => {
         };
       });
 
-      // Step 2 & 3: AI execution
       setTimeout(() => {
-        setSubmitStep('Evaluating technical competency & sentiment tone...');
+        setSubmitStep('Executing AI Technical & NLP Sentiment Evaluation...');
       }, 1000);
 
       setTimeout(() => {
-        setSubmitStep('Generating final interview insights and score breakdown...');
+        setSubmitStep('Generating final multi-round evaluation dossier...');
       }, 2000);
 
-      const res = await sessionAPI.submit(sessionId, {
+      await sessionAPI.submit(sessionId, {
         answers: payloadAnswers
       });
 
-      success('Interview submitted successfully! AI evaluation complete.');
+      success('Assessment submitted successfully! Evaluation completed.');
       navigate(`/candidate/complete/${sessionId}`);
     } catch (err) {
       error(err.message || 'Submission failed');
@@ -225,7 +279,7 @@ const InterviewSessionPage = () => {
   };
 
   if (loading) {
-    return <LoadingSpinner message="Preparing interview environment..." />;
+    return <LoadingSpinner message="Preparing 6-round proctored assessment environment..." />;
   }
 
   if (submitting) {
@@ -233,7 +287,7 @@ const InterviewSessionPage = () => {
       <div className="min-h-[60vh] flex flex-col items-center justify-center">
         <LoadingSpinner
           message={submitStep}
-          submessage="AI NLP pipeline is parsing responses, matching concepts, and calculating competency metrics."
+          submessage="AI pipeline is evaluating MCQs, code correctness, verbal communication, and technical depth."
           isAi={true}
         />
       </div>
@@ -243,10 +297,18 @@ const InterviewSessionPage = () => {
   const answeredCount = Object.values(answers).filter((a) => (a || '').trim().length > 0).length;
   const wordCount = currentAnswer.trim() ? currentAnswer.trim().split(/\s+/).length : 0;
   const charCount = currentAnswer.length;
+  const RoundIcon = currentRoundConfig.icon;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Top Header bar with progress and timer */}
+      {/* Zero-Tolerance Proctoring Malpractice Warning Overlay */}
+      <ProctoringWarningOverlay
+        activeViolation={activeViolation}
+        countdownSeconds={countdownSeconds}
+        isTerminated={isTerminated}
+      />
+
+      {/* Top Header bar with Progress, Telemetry, and Timer */}
       <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -261,7 +323,7 @@ const InterviewSessionPage = () => {
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold border border-slate-800 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] uppercase tracking-wider">AI Proctored</span>
+            <span className="text-[11px] uppercase tracking-wider">AI Proctoring Active</span>
           </div>
 
           <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold">
@@ -290,11 +352,44 @@ const InterviewSessionPage = () => {
         </div>
       </div>
 
+      {/* 6 Assessment Rounds Navigation Tabs */}
+      <div className="bg-white rounded-2xl p-3 border border-slate-200/90 shadow-sm">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {ROUND_CONFIGS.map((rnd) => {
+            const isRoundActive = currentRoundId === rnd.id;
+            const RndIcon = rnd.icon;
+            const roundQuestions = questions.filter((q) => getQuestionRound(q) === rnd.id);
+            const roundAnswered = roundQuestions.filter((q) => (answers[q._id || q.id] || '').trim().length > 0).length;
+
+            return (
+              <button
+                key={rnd.id}
+                type="button"
+                onClick={() => handleJumpToRound(rnd.id)}
+                className={`flex-shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  isRoundActive
+                    ? 'bg-slate-900 text-white shadow-md'
+                    : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200/60'
+                }`}
+              >
+                <RndIcon className={`w-3.5 h-3.5 ${isRoundActive ? 'text-indigo-400' : 'text-slate-500'}`} />
+                <span>{rnd.label}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                  isRoundActive ? 'bg-slate-800 text-indigo-300' : 'bg-slate-200 text-slate-600'
+                }`}>
+                  {roundAnswered}/{roundQuestions.length}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Progress Bar & Question Jump Palette */}
       <div className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm space-y-3">
         <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
-          <span>Overall Progress: {Math.round((answeredCount / questions.length) * 100)}%</span>
-          <span>{answeredCount} / {questions.length} Answered</span>
+          <span>Overall Assessment Progress: {Math.round((answeredCount / questions.length) * 100)}%</span>
+          <span>{answeredCount} / {questions.length} Answered Across All Rounds</span>
         </div>
 
         <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
@@ -310,6 +405,7 @@ const InterviewSessionPage = () => {
             const isCurrent = idx === currentIndex;
             const qId = q._id || q.id;
             const hasAnswer = (answers[qId] || '').trim().length > 0;
+            const qRnd = getQuestionRound(q);
 
             return (
               <button
@@ -322,7 +418,7 @@ const InterviewSessionPage = () => {
                     ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
-                title={`Question ${idx + 1}`}
+                title={`Q${idx + 1} (${qRnd.toUpperCase()})`}
               >
                 {idx + 1}
               </button>
@@ -331,18 +427,26 @@ const InterviewSessionPage = () => {
         </div>
       </div>
 
-      {/* Main Question Card */}
+      {/* Main Question Card with Dynamic Per-Round Renderers */}
       {currentQuestion && (
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+          {/* Header Badges */}
           <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-slate-900 text-white flex items-center gap-1.5 shadow-sm">
+                <RoundIcon className="w-3.5 h-3.5 text-indigo-400" />
+                <span>{currentRoundConfig.label}</span>
+              </span>
+
               <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800">
                 {currentQuestion.category}
               </span>
+
               <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
                 Difficulty: {currentQuestion.difficulty}
               </span>
             </div>
+
             <div className="text-xs font-semibold text-slate-500">
               Max Score: {currentQuestion.maxScore || 10} Points
             </div>
@@ -354,35 +458,66 @@ const InterviewSessionPage = () => {
               {currentQuestion.question}
             </h2>
             <p className="mt-1.5 text-xs text-slate-500">
-              Please formulate a complete, technically sound response. Provide definitions, key mechanisms, and practical examples.
+              {currentRoundId === 'mcq' || currentRoundId === 'aptitude'
+                ? 'Select the single best answer option below.'
+                : currentRoundId === 'coding'
+                ? 'Write clean, optimal code in the editor below and validate against test cases.'
+                : currentRoundId === 'communication'
+                ? 'Click "Dictate with Microphone" to record your verbal briefing response.'
+                : 'Formulate a comprehensive, technically sound answer. Definitions, mechanisms, and examples are evaluated.'}
             </p>
           </div>
 
-          {/* Answer Textarea */}
-          <div className="space-y-2">
-            <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-600">
-              <label htmlFor="answer-box">Your Response</label>
-              <div className="flex items-center gap-3">
-                <SpeechToTextButton onTranscript={handleVoiceTranscript} />
-                <div className="flex items-center gap-2 text-slate-400 font-normal">
-                  <span>{wordCount} Words</span>
-                  <span>•</span>
-                  <span>{charCount} Characters</span>
+          {/* Dynamic Input Body: MCQ / Coding / Speech / Text */}
+          {currentRoundId === 'mcq' || currentRoundId === 'aptitude' || (currentQuestion.options && currentQuestion.options.length > 0) ? (
+            <MCQQuestionView
+              question={currentQuestion}
+              selectedAnswer={currentAnswer}
+              onSelectAnswer={(opt) => {
+                handleAnswerChange(opt);
+                autosaveAnswer(currentQuestion._id || currentQuestion.id, opt);
+              }}
+            />
+          ) : currentRoundId === 'coding' || currentQuestion.type === 'coding' ? (
+            <CodeEditor
+              code={currentAnswer || currentQuestion.starterCode}
+              starterCode={currentQuestion.starterCode}
+              testCases={currentQuestion.testCases}
+              onChange={(codeVal) => {
+                handleAnswerChange(codeVal);
+                autosaveAnswer(currentQuestion._id || currentQuestion.id, codeVal);
+              }}
+            />
+          ) : (
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-600">
+                <label htmlFor="answer-box">Your Response</label>
+                <div className="flex items-center gap-3">
+                  <SpeechToTextButton onTranscript={handleVoiceTranscript} />
+                  <div className="flex items-center gap-2 text-slate-400 font-normal">
+                    <span>{wordCount} Words</span>
+                    <span>•</span>
+                    <span>{charCount} Characters</span>
+                  </div>
                 </div>
               </div>
+
+              <textarea
+                id="answer-box"
+                rows={currentRoundId === 'communication' ? 6 : 8}
+                value={currentAnswer}
+                onChange={(e) => handleAnswerChange(e.target.value)}
+                placeholder={
+                  currentRoundId === 'communication'
+                    ? 'Speak your response using the microphone button above, or type your structured executive briefing here...'
+                    : 'Type your detailed answer or click "Dictate with Microphone" to speak. Describe fundamental principles, relevant frameworks, and practical examples...'
+                }
+                className="w-full p-4 text-sm bg-slate-50/70 border border-slate-200 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition leading-relaxed"
+              />
             </div>
+          )}
 
-            <textarea
-              id="answer-box"
-              rows={8}
-              value={currentAnswer}
-              onChange={(e) => handleAnswerChange(e.target.value)}
-              placeholder="Type your detailed answer or click 'Dictate with Microphone' above to speak naturally. Describe fundamental principles, relevant frameworks, and practical examples..."
-              className="w-full p-4 text-sm bg-slate-50/70 border border-slate-200 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition leading-relaxed"
-            />
-          </div>
-
-          {/* Navigation controls */}
+          {/* Navigation Controls */}
           <div className="flex items-center justify-between pt-4 border-t border-slate-100">
             <button
               onClick={handlePrevious}
@@ -400,7 +535,7 @@ const InterviewSessionPage = () => {
                   className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md shadow-emerald-600/20 transition"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Submit Final Interview</span>
+                  <span>Submit Final Multi-Round Assessment</span>
                 </button>
               ) : (
                 <button
@@ -420,25 +555,26 @@ const InterviewSessionPage = () => {
       <Modal
         isOpen={isSubmitModalOpen}
         onClose={() => setIsSubmitModalOpen(false)}
-        title="Submit Interview for Evaluation"
-        maxWidth="max-w-lg"
+        title="Submit Multi-Round Assessment"
       >
         <div className="space-y-4">
           <p className="text-sm text-slate-600">
-            You have completed <strong>{answeredCount}</strong> out of <strong>{questions.length}</strong> questions.
+            Are you ready to submit your assessment? You have completed{' '}
+            <strong className="text-slate-900">{answeredCount}</strong> of{' '}
+            <strong className="text-slate-900">{questions.length}</strong> questions across all 6 rounds.
           </p>
 
-          {answeredCount < questions.length && (
+          {questions.length - answeredCount > 0 && (
             <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <span>
-                You have <strong>{questions.length - answeredCount}</strong> unanswered questions. Unanswered questions will receive 0 technical marks.
+                You have <strong>{questions.length - answeredCount}</strong> unanswered questions. Unanswered questions will receive 0 marks.
               </span>
             </div>
           )}
 
           <p className="text-xs text-slate-500 leading-relaxed">
-            Upon clicking "Confirm Submission", the AI sentiment analysis and technical competency evaluation pipeline will automatically process your responses.
+            Upon confirmation, the automated AI pipeline evaluates your MCQ answers, technical concept coverage, code correctness, verbal communication, and HR behavioral sentiment.
           </p>
 
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
@@ -466,7 +602,7 @@ const InterviewSessionPage = () => {
         audioLevel={audioLevel}
         onToggleCamera={toggleCamera}
         onToggleMic={toggleMic}
-        warningCount={warningCount}
+        warningCount={isOutOfFrame || isLookingAway ? 1 : 0}
       />
     </div>
   );

@@ -37,6 +37,8 @@ exports.getAll = async (req, res, next) => {
           ? 'Completed'
           : latestSession.status === 'in_progress'
           ? 'In Progress'
+          : latestSession.status === 'disqualified'
+          ? 'Disqualified'
           : 'Pending';
 
         const report = reports.find(r => String(r.sessionId) === String(sessionId));
@@ -62,6 +64,7 @@ exports.getAll = async (req, res, next) => {
         sentimentLabel,
         overallScore,
         status,
+        malpracticeReason: latestSession ? (latestSession.malpracticeReason || null) : null,
         date: c.createdAt
       };
     });

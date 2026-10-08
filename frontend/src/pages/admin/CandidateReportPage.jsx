@@ -136,13 +136,34 @@ const CandidateReportPage = () => {
           </div>
         </div>
 
+        {/* Malpractice Disqualification Incident Banner */}
+        {session?.status === 'disqualified' && (
+          <div className="p-5 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-950 space-y-2 animate-in fade-in">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />
+              <span className="font-extrabold text-sm uppercase tracking-wider text-rose-900">
+                Candidate Disqualified — Anti-Malpractice Violation
+              </span>
+            </div>
+            <p className="text-xs text-rose-800 leading-relaxed font-medium">
+              The candidate was automatically ejected and disqualified by the proctoring engine due to: <strong className="text-rose-950 font-bold underline">{session?.malpracticeReason || 'Suspicious proctoring violation'}</strong>.
+              All scores have been voided (0/100) per institutional zero-tolerance proctoring policy.
+            </p>
+            {session?.disqualifiedAt && (
+              <div className="text-[11px] text-rose-700 font-mono">
+                Violation Incident Timestamp: {new Date(session.disqualifiedAt).toLocaleString()}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Executive Overall Score Summary */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="p-5 rounded-2xl bg-gradient-to-br from-indigo-50 to-blue-50/60 border border-indigo-100 text-center">
             <span className="text-xs font-bold text-indigo-950 uppercase tracking-wider">
               Overall Candidate Score
             </span>
-            <div className="text-4xl font-extrabold text-indigo-700 mt-2">
+            <div className={`text-4xl font-extrabold mt-2 ${session?.status === 'disqualified' ? 'text-rose-600' : 'text-indigo-700'}`}>
               {overallEvaluation?.overallScore || 0}
               <span className="text-sm font-normal text-slate-400"> / 100</span>
             </div>
@@ -155,7 +176,7 @@ const CandidateReportPage = () => {
             <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
               Technical Competency (70%)
             </span>
-            <div className="text-4xl font-extrabold text-emerald-700 mt-2">
+            <div className={`text-4xl font-extrabold mt-2 ${session?.status === 'disqualified' ? 'text-rose-600' : 'text-emerald-700'}`}>
               {overallEvaluation?.technicalScore || 0}
               <span className="text-sm font-normal text-slate-400"> / 100</span>
             </div>
@@ -168,7 +189,7 @@ const CandidateReportPage = () => {
             <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
               Communication & Sentiment (30%)
             </span>
-            <div className="text-4xl font-extrabold text-blue-700 mt-2">
+            <div className={`text-4xl font-extrabold mt-2 ${session?.status === 'disqualified' ? 'text-rose-600' : 'text-blue-700'}`}>
               {overallEvaluation?.sentimentScore || 0}
               <span className="text-sm font-normal text-slate-400"> / 100</span>
             </div>
@@ -181,7 +202,7 @@ const CandidateReportPage = () => {
         {/* Assessment Proctoring & Media Verification Telemetry */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-900 text-white rounded-2xl border border-slate-800">
           <div className="flex items-center gap-2.5">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className={`w-2 h-2 rounded-full ${session?.status === 'disqualified' ? 'bg-rose-500' : 'bg-emerald-400 animate-pulse'}`} />
             <div>
               <div className="text-[10px] uppercase font-bold text-slate-400">Webcam Stream</div>
               <div className="text-xs font-bold text-emerald-400">Verified & Monitored</div>
@@ -202,10 +223,12 @@ const CandidateReportPage = () => {
             </div>
           </div>
           <div className="flex items-center gap-2.5">
-            <div className="w-2 h-2 rounded-full bg-emerald-400" />
+            <div className={`w-2 h-2 rounded-full ${session?.status === 'disqualified' ? 'bg-rose-500 animate-ping' : 'bg-emerald-400'}`} />
             <div>
               <div className="text-[10px] uppercase font-bold text-slate-400">Session Integrity</div>
-              <div className="text-xs font-bold text-emerald-400">Verified Secure</div>
+              <div className={`text-xs font-bold ${session?.status === 'disqualified' ? 'text-rose-400' : 'text-emerald-400'}`}>
+                {session?.status === 'disqualified' ? 'Terminated - Disqualified' : 'Verified Secure'}
+              </div>
             </div>
           </div>
         </div>

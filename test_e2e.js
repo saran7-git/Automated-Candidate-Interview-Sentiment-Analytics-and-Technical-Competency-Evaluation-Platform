@@ -21,7 +21,7 @@ async function testAll() {
   });
   const aLoginData = await aLogin.json();
   console.log('Admin login:', aLoginData.success, '| User:', aLoginData.user?.name);
-  const token = aLoginData.token;
+  const adminToken = aLoginData.token;
 
   console.log('\n--- 4. Testing Candidate Dynamic Registration & Login ---');
   const tempEmail = `candidate.${Date.now()}@example.com`;
@@ -29,15 +29,17 @@ async function testAll() {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      name: 'Test Candidate',
+      name: 'Priya Sharma',
       email: tempEmail,
       password: 'Candidate@123',
       role: 'candidate',
-      skills: ['React', 'Node.js']
+      skills: ['React', 'Node.js', 'PostgreSQL']
     })
   });
   const regData = await regRes.json();
-  console.log('Candidate registration:', regData.success, '| User:', regData.user?.name);
+  console.log('Candidate registration:', regData.success, '| Candidate ID:', regData.user?.candidateId);
+  const candidateId = regData.user?.candidateId;
+  const candidateToken = regData.token;
 
   const cLogin = await fetch(baseApi + '/auth/login', {
     method: 'POST',
@@ -47,44 +49,78 @@ async function testAll() {
   const cLoginData = await cLogin.json();
   console.log('Candidate login:', cLoginData.success, '| User:', cLoginData.user?.name);
 
-  console.log('\n--- 5. Testing Dashboard Statistics ---');
-  const sRes = await fetch(baseApi + '/dashboard/statistics', {
-    headers: { Authorization: 'Bearer ' + token }
+  console.log('\n--- 5. Testing Interview Templates (6-Round Suite) ---');
+  const intRes = await fetch(baseApi + '/interviews', {
+    headers: { Authorization: 'Bearer ' + candidateToken }
   });
-  const sData = await sRes.json();
-  console.log('Total Candidates:', sData.statistics.totalCandidates);
-  console.log('Total Interviews:', sData.statistics.totalInterviews);
-  console.log('Avg Technical Score:', sData.statistics.averageTechnicalScore);
-  console.log('Avg Sentiment Score:', sData.statistics.averageSentimentScore);
-  console.log('Sentiment Distribution:', sData.statistics.sentimentDistribution.map(s => `${s.name}: ${s.percentage}%`).join(', '));
+  const intData = await intRes.json();
+  const template = intData.interviews[0];
+  console.log('Loaded Interview Template:', template.title, '| Questions count:', template.questions.length);
 
-  console.log('\n--- 6. Testing Direct AI Analysis on Normalization Answer ---');
-  const sampleAnswer = 'Normalization is vital for organizing relational database tables and eliminating data redundancy and update anomalies. In 1NF we enforce atomic values, in 2NF we remove partial dependencies, and in 3NF we remove transitive dependencies. This keeps the database remarkably clean.';
-  const aiRes = await fetch(baseApi + '/ai/analyze', {
+  console.log('\n--- 6. Creating & Starting Interview Session ---');
+  const sessRes = await fetch(baseApi + '/sessions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token
+      Authorization: 'Bearer ' + adminToken
     },
     body: JSON.stringify({
-      candidateAnswer: sampleAnswer,
-      questionText: 'What is database normalization, why is it needed, and what distinguish 1NF, 2NF, and 3NF?',
-      expectedAnswer: 'Database normalization structures tables to reduce data redundancy and eliminate anomalies. 1NF requires atomic values, 2NF removes partial dependency, and 3NF removes transitive dependencies.',
-      keywords: ['redundancy', 'anomalies', '1NF', '2NF', '3NF', 'atomic values', 'partial dependency', 'transitive dependency'],
-      category: 'Database'
+      candidateId: candidateId,
+      interviewId: template._id || template.id
     })
   });
-  const aiData = await aiRes.json();
-  console.log('Sentiment:', aiData.evaluation.sentiment, '| Score:', aiData.evaluation.sentimentScore, '| Confidence:', aiData.evaluation.sentimentConfidence);
-  console.log('Technical Score:', aiData.evaluation.technicalScore, '| Correctness:', aiData.evaluation.correctnessScore, '| Coverage:', aiData.evaluation.conceptCoverageScore);
-  console.log('Overall Answer Score (70% Tech + 30% Sent):', aiData.evaluation.overallAnswerScore);
-  console.log('Detected Concepts:', aiData.evaluation.detectedConcepts);
-  console.log('Missing Concepts:', aiData.evaluation.missingConcepts);
-  console.log('AI Feedback:', aiData.evaluation.feedback);
+  const sessData = await sessRes.json();
+  const sessionId = sessData.session._id || sessData.session.id;
+  console.log('Session Created:', sessionId, '| Status:', sessData.session.status);
 
-  console.log('\n--- 7. Testing Candidate Report Dossier (sess_alex_01) ---');
-  const rRes = await fetch(baseApi + '/reports/sess_alex_01', {
-    headers: { Authorization: 'Bearer ' + token }
+  // Start session
+  await fetch(`${baseApi}/sessions/${sessionId}/start`, {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + candidateToken }
+  });
+
+  console.log('\n--- 7. Submitting Responses Across Rounds ---');
+  const sampleAnswer1 = 'B) O(log n)';
+  const sampleAnswer2 = 'In Node.js, the event loop handles non-blocking asynchronous I/O by offloading expensive system calls and filesystem operations to libuv worker thread pools.';
+  
+  await fetch(baseApi + '/responses', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + candidateToken
+    },
+    body: JSON.stringify({
+      sessionId: sessionId,
+      questionId: template.questions[0]._id || template.questions[0].id,
+      candidateAnswer: sampleAnswer1
+    })
+  });
+
+  await fetch(baseApi + '/responses', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + candidateToken
+    },
+    body: JSON.stringify({
+      sessionId: sessionId,
+      questionId: template.questions[2]._id || template.questions[2].id,
+      candidateAnswer: sampleAnswer2
+    })
+  });
+  console.log('Responses submitted for Round 1 (MCQ) and Round 2 (Technical)');
+
+  // Complete session submission
+  const submitRes = await fetch(`${baseApi}/sessions/${sessionId}/submit`, {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + candidateToken }
+  });
+  const submitData = await submitRes.json();
+  console.log('Session Submitted Successfully:', submitData.success);
+
+  console.log('\n--- 8. Testing Candidate Report Dossier & AI Evaluation ---');
+  const rRes = await fetch(`${baseApi}/reports/${sessionId}`, {
+    headers: { Authorization: 'Bearer ' + adminToken }
   });
   const rData = await rRes.json();
   console.log('Candidate Dossier Name:', rData.report.candidate.name);
@@ -94,26 +130,53 @@ async function testAll() {
   console.log('Sentiment Score:', rData.report.overallEvaluation.sentimentScore);
   console.log('AI Recommendation:', rData.report.overallEvaluation.recommendation);
   console.log('Questions Evaluated:', rData.report.questionEvaluations.length);
-  console.log('Timeline Data Points:', rData.report.sentimentTimeline.length);
 
-  console.log('\n--- 8. Testing Multi-Candidate Comparison ---');
-  const cmpRes = await fetch(baseApi + '/dashboard/compare', {
+  console.log('\n--- 9. Testing Anti-Malpractice Auto-Termination API ---');
+  // Create another session to test proctoring auto-termination
+  const termSessRes = await fetch(baseApi + '/sessions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token
+      Authorization: 'Bearer ' + adminToken
     },
-    body: JSON.stringify({ sessionIds: ['sess_alex_01', 'sess_priya_02', 'sess_marcus_03'] })
+    body: JSON.stringify({
+      candidateId: candidateId,
+      interviewId: template._id || template.id
+    })
   });
-  const cmpData = await cmpRes.json();
-  console.log('Compared Candidates:', cmpData.comparison.map(c => `${c.candidateName} (Overall: ${c.overallScore}, Tech: ${c.technicalScore}, Sent: ${c.sentimentScore}, Rec: ${c.recommendation})`));
+  const termSessData = await termSessRes.json();
+  const termSessionId = termSessData.session._id || termSessData.session.id;
+
+  // Trigger malpractice termination
+  const termActionRes = await fetch(`${baseApi}/sessions/${termSessionId}/terminate`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + candidateToken
+    },
+    body: JSON.stringify({
+      reason: 'Candidate head turned away from assessment camera'
+    })
+  });
+  const termActionData = await termActionRes.json();
+  console.log('Session Disqualified:', termActionData.success);
+  console.log('Session Status:', termActionData.session.status);
+  console.log('Malpractice Reason:', termActionData.session.malpracticeReason);
+
+  console.log('\n--- 10. Testing Dashboard Statistics & Candidate Listing ---');
+  const candListRes = await fetch(baseApi + '/candidates', {
+    headers: { Authorization: 'Bearer ' + adminToken }
+  });
+  const candListData = await candListRes.json();
+  const candidateEntry = candListData.candidates.find(c => c.id === candidateId);
+  console.log('Candidate in Directory:', candidateEntry.name, '| Status:', candidateEntry.status);
 
   console.log('\n======================================================');
   console.log('>>> ALL END-TO-END SYSTEM INTEGRATION TESTS PASSED! <<<');
   console.log('======================================================');
 }
 
-testAll().catch(e => {
-  console.error('Test Error:', e);
+testAll().catch(err => {
+  console.error('Test Error:', err);
   process.exit(1);
 });

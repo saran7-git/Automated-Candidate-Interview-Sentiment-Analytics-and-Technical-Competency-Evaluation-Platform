@@ -79,24 +79,28 @@ The platform is designed as an end-to-end recruitment suite featuring role-based
 ### For Candidates (`/candidate`)
 - **Candidate Portal Dashboard:**
   - View assigned, in-progress, and completed interview assessments.
-  - Review latest completed assessment score and status.
+  - Review latest completed assessment score, recommendation, and status.
 - **Hardware Diagnostics & Pre-Assessment System Check:**
   - Mandatory webcam and microphone diagnostics before assessment launch.
   - Live video viewfinder mirror with face framing alignment guide.
   - Real-time microphone audio input visualizer with dynamic volume level meter.
   - Browser permissions and speech recognition capability verification.
-- **Live Proctored Assessment Workspace:**
-  - **Floating Proctoring Camera Widget:** Live picture-in-picture webcam feed with active recording badge (`● PROCTORING ACTIVE`), facial presence tracking, and real-time audio equalizer bars.
-  - **Real-Time Voice-to-Text Dictation:** Click *"Dictate with Microphone"* to speak answers naturally; speech is transcribed in real-time into the response editor.
-  - **Assessment Integrity Monitor:** Detects tab switching or window blur events with live proctoring alerts.
-  - Current question view with category and difficulty badges.
-  - Live countdown timer with auto-submit safeguard.
-  - Live word count and character count monitors.
-  - Question bubble jump palette displaying answered vs pending questions.
-  - Automatic draft saving upon navigation.
-  - Final submission modal with unanswered question alerts.
-- **Submission Confirmation:**
-  - Verified receipt with unique Session ID, submission timestamp, and status.
+- **Strict Real-Time AI Proctoring & Malpractice Auto-Termination:**
+  - **Computer Vision Frame Analysis:** Live HTML5 canvas pixel analysis and facial centroid tracking running every 850ms.
+  - **Out-of-Frame Detection:** Alerts if the candidate moves away from the camera or leaves the seat.
+  - **Averted Gaze / Looking Away Detection:** Detects if the candidate looks away from the screen or exhibits persistent averted gaze.
+  - **Window Blur / Tab Switch Detection:** Instant detection of tab switching, window minimization, or devtool opening.
+  - **3-Second Emergency Warning HUD:** Displays a prominent pulsing red countdown timer. If the candidate fails to return their gaze to the screen within 3 seconds (or instantly upon tab blur), the assessment **terminates immediately**.
+  - **Automatic Disqualification:** Server automatically marks the session as `disqualified`, records the specific violation reason, voids all scores to 0/100, and locks the candidate into a dedicated Disqualification Incident Page (`/candidate/terminated/:sessionId`).
+- **Comprehensive 6-Round Multi-Modal Assessment Workspace:**
+  - **Round 1 — MCQ Round:** Rapid-fire core computer science concepts with interactive A/B/C/D option cards and selection indicators.
+  - **Round 2 — Technical Round:** Deep-dive architectural and system design engineering prompts with real-time word count telemetry.
+  - **Round 3 — Aptitude Round:** Quantitative logic, work rate calculations, and algorithmic reasoning MCQs.
+  - **Round 4 — Coding Round:** Built-in interactive code editor with syntax highlighting, language selector (JavaScript, Python, Java, C++), code template reset, and an in-browser sandbox runner with pass/fail test case badges.
+  - **Round 5 — Communication Round:** Audio verbal dictation testing communication clarity, incident response articulation, and speech transcription.
+  - **Round 6 — HR Final AI Round:** Behavioral, situational leadership, and ethical decision-making scenarios evaluated by multi-phase sentiment NLP.
+- **Floating Proctoring Camera Widget:** Live picture-in-picture webcam feed with active monitoring indicator (`● PROCTORING ACTIVE`), head pose tracking, and real-time audio visualizer bars.
+- **Question Jump Palette & Auto-Save:** Instant navigation between rounds and questions with continuous draft auto-saving.
 
 ---
 
@@ -366,6 +370,7 @@ npm run db:reset
 - `GET  /api/sessions/candidate/:candidateId` — Get all sessions for a candidate
 - `POST /api/sessions/:id/start` — Mark interview session as started
 - `POST /api/sessions/:id/submit` — Submit answers and trigger AI evaluation pipeline
+- `POST /api/sessions/:id/terminate` — Immediately disqualify and terminate session due to detected malpractice
 - `POST /api/responses` — Save or autosave candidate response for a question
 - `GET  /api/responses/:sessionId` — Retrieve all responses for a session
 

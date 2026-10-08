@@ -64,6 +64,7 @@ export const sessionAPI = {
   update: (id, data) => api.put(`/sessions/${id}`, data),
   startSession: (id) => api.post(`/sessions/${id}/start`),
   submit: (id, data) => api.post(`/sessions/${id}/submit`, data),
+  terminate: (id, data) => api.post(`/sessions/${id}/terminate`, data),
 };
 
 export const responseAPI = {

@@ -74,6 +74,8 @@ exports.getBySession = async (req, res, next) => {
         session: {
           id: String(session._id || session.id),
           status: session.status,
+          malpracticeReason: session.malpracticeReason || null,
+          disqualifiedAt: session.disqualifiedAt || null,
           startedAt: session.startedAt,
           completedAt: session.completedAt,
           createdAt: session.createdAt

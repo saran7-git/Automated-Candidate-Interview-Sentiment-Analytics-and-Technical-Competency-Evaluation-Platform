@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js",
+    "dev": "node --watch-path=src src/server.js",
     "db:init": "node src/utils/initDatabase.js",
     "db:reset": "node src/utils/resetDatabase.js",
     "seed": "node src/utils/seedData.js"

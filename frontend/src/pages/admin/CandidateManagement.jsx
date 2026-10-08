@@ -16,7 +16,8 @@ import {
   Sparkles,
   Bot,
   Eye,
-  AlertCircle
+  AlertCircle,
+  AlertTriangle
 } from 'lucide-react';
 
 const CandidateManagement = () => {
@@ -218,6 +219,7 @@ const CandidateManagement = () => {
               <option value="ALL">All Statuses</option>
               <option value="Completed">Completed</option>
               <option value="In Progress">In Progress</option>
+              <option value="Disqualified">Disqualified</option>
               <option value="Pending">Pending</option>
             </select>
 
@@ -331,6 +333,21 @@ const CandidateManagement = () => {
                         <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-100 text-blue-800 border border-blue-200">
                           In Progress
                         </span>
+                      ) : cand.status === 'Disqualified' ? (
+                        <div className="flex flex-col items-start gap-0.5">
+                          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-200 inline-flex items-center gap-1">
+                            <AlertTriangle className="w-3 h-3 text-rose-600 shrink-0" />
+                            Disqualified
+                          </span>
+                          {cand.malpracticeReason && (
+                            <span
+                              className="text-[10px] text-rose-600 font-medium truncate max-w-[140px]"
+                              title={cand.malpracticeReason}
+                            >
+                              {cand.malpracticeReason}
+                            </span>
+                          )}
+                        </div>
                       ) : (
                         <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
                           Pending

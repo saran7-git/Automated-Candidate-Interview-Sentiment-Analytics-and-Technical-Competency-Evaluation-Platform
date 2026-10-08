@@ -9,5 +9,6 @@ router.get('/candidate/:candidateId', authenticate, sessionController.getByCandi
 router.put('/:id', authenticate, sessionController.update);
 router.post('/:id/start', authenticate, sessionController.startSession);
 router.post('/:id/submit', authenticate, sessionController.submit);
+router.post('/:id/terminate', authenticate, sessionController.terminate);
 
 module.exports = router;

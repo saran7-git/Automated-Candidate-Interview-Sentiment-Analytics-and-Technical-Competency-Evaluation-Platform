@@ -228,3 +228,66 @@ exports.submit = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.terminate = async (req, res, next) => {
+  try {
+    const sessionId = req.params.id;
+    const { reason = 'Malpractice / integrity violation detected by proctoring engine', violationType = 'PROCTORING_INFRACTION' } = req.body;
+
+    const session = await InterviewSession.findById(sessionId);
+    if (!session) {
+      return res.status(404).json({ success: false, message: 'Session not found' });
+    }
+
+    const updatedSession = await InterviewSession.findByIdAndUpdate(
+      sessionId,
+      {
+        status: 'disqualified',
+        malpracticeReason: reason,
+        disqualifiedAt: new Date().toISOString(),
+        completedAt: new Date().toISOString()
+      },
+      { new: true }
+    );
+
+    // Save final report with 0 score and disqualification
+    let finalReport = await FinalReport.findOne({ sessionId: String(sessionId) });
+    const reportPayload = {
+      sessionId: String(sessionId),
+      candidateId: String(session.candidateId),
+      interviewId: String(session.interviewId),
+      technicalScore: 0,
+      sentimentScore: 0,
+      overallScore: 0,
+      recommendation: 'Disqualified (Malpractice)',
+      aiSummary: `ASSESSMENT TERMINATED IMMEDIATELY: Malpractice violation detected by AI proctoring monitor (${violationType}). Details: ${reason}. The candidate has been disqualified from this recruitment cycle.`,
+      aiStrengths: [],
+      aiWeaknesses: [
+        `Assessment terminated for malpractice: ${reason}`,
+        `Violation Category: ${violationType}`
+      ],
+      sentimentStats: { positive: 0, neutral: 0, negative: 100 },
+      technicalMetrics: {
+        averageRelevance: 0,
+        averageCorrectness: 0,
+        averageCoverage: 0,
+        averageCompleteness: 0
+      }
+    };
+
+    if (finalReport) {
+      finalReport = await FinalReport.findByIdAndUpdate(finalReport._id || finalReport.id, reportPayload, { new: true });
+    } else {
+      finalReport = await FinalReport.create(reportPayload);
+    }
+
+    res.json({
+      success: true,
+      message: 'Assessment terminated immediately due to malpractice violation',
+      session: updatedSession,
+      report: finalReport
+    });
+  } catch (err) {
+    next(err);
+  }
+};

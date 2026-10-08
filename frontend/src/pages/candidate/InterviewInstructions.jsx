@@ -137,36 +137,65 @@ const InterviewInstructions = () => {
         {/* Camera & Microphone System Check Card */}
         <MediaSystemCheck onVerified={setIsMediaReady} isVerified={isMediaReady} />
 
+        {/* 6 Rounds Assessment Suite Overview */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-indigo-600" />
+            6-Round Assessment Structure
+          </h3>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <div className="text-xs font-bold text-indigo-700">1. MCQ Round</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">Computer science & engineering core concepts</div>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <div className="text-xs font-bold text-blue-700">2. Technical Round</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">Architecture, databases & system design</div>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <div className="text-xs font-bold text-amber-700">3. Aptitude Round</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">Quantitative logic & analytical reasoning</div>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <div className="text-xs font-bold text-emerald-700">4. Coding Round</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">Interactive code IDE with test runner sandbox</div>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <div className="text-xs font-bold text-purple-700">5. Communication Round</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">Incident verbal briefing via microphone</div>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <div className="text-xs font-bold text-rose-700">6. HR Final AI Round</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">Behavioral EQ & culture alignment</div>
+            </div>
+          </div>
+        </div>
+
         {/* Candidate Rules & Instructions */}
         <div className="space-y-4">
           <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-indigo-600" />
-            Evaluation Guidelines & Proctoring Instructions
+            Zero-Tolerance Automated Proctoring Rules
           </h3>
 
           <ul className="space-y-3 text-xs text-slate-600">
-            <li className="flex items-start gap-2.5">
-              <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+            <li className="flex items-start gap-2.5 p-3 rounded-xl bg-rose-50/80 border border-rose-200 text-rose-900">
+              <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
               <span>
-                <strong>Camera & Audio Proctoring:</strong> Maintain proper lighting and remain centered in front of your camera. Real-time facial sentiment and vocal confidence cues contribute to your communication rating.
+                <strong>IMMEDIATE TERMINATION FOR MALPRACTICE:</strong> If you move out of camera frame, look away/avert your eye gaze from the assessment screen, or switch browser tabs, the AI proctoring monitor triggers an automatic countdown and <strong>terminates your assessment right away</strong> with instant disqualification.
               </span>
             </li>
             <li className="flex items-start gap-2.5">
               <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>
-                <strong>Voice Dictation Supported:</strong> You can click "Dictate with Microphone" inside any question to speak your answer naturally. Spoken answers are transcribed in real-time.
+                <strong>Continuous Gaze Focus:</strong> Keep your eyes centered on the screen. Avoid glancing at notes, secondary devices, or looking around your room.
               </span>
             </li>
             <li className="flex items-start gap-2.5">
               <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>
-                <strong>Answer thoroughly:</strong> The AI evaluation measures technical correctness, relevance, completeness, and keyword/concept coverage. Provide detailed conceptual explanations rather than one-line summaries.
-              </span>
-            </li>
-            <li className="flex items-start gap-2.5">
-              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-              <span>
-                <strong>Assessment Integrity:</strong> Keep this browser tab focused. Leaving or switching tabs triggers an integrity warning that is logged on your candidate report.
+                <strong>Voice Dictation & Coding IDE:</strong> You can dictate spoken answers in Round 5 using your microphone and test execution algorithms in Round 4 using the built-in test runner.
               </span>
             </li>
           </ul>

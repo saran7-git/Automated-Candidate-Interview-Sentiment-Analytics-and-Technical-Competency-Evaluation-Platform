@@ -15,6 +15,7 @@ import CandidateDashboard from './pages/candidate/CandidateDashboard';
 import InterviewInstructions from './pages/candidate/InterviewInstructions';
 import InterviewSessionPage from './pages/candidate/InterviewSessionPage';
 import InterviewCompletionPage from './pages/candidate/InterviewCompletionPage';
+import AssessmentTerminatedPage from './pages/candidate/AssessmentTerminatedPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -45,6 +46,7 @@ function App() {
         <Route path="instructions/:sessionId" element={<InterviewInstructions />} />
         <Route path="interview/:sessionId" element={<InterviewSessionPage />} />
         <Route path="complete/:sessionId" element={<InterviewCompletionPage />} />
+        <Route path="terminated/:sessionId" element={<AssessmentTerminatedPage />} />
       </Route>
 
       {/* Admin / Recruiter Dashboard Routes */}
