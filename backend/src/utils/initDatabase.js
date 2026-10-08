@@ -1,0 +1,106 @@
+const bcrypt = require('bcryptjs');
+const User = require('../models/User');
+const Candidate = require('../models/Candidate');
+const Interview = require('../models/Interview');
+const InterviewSession = require('../models/InterviewSession');
+const { generateFoundationAssessment } = require('../ai/dynamicQuestionGenerator');
+
+/**
+ * Initializes default Admin account, default Candidate account,
+ * and the official 2026 Foundation Assessment
+ */
+async function initDatabase() {
+  const salt = await bcrypt.genSalt(10);
+
+  // 1. Ensure default administrator account exists
+  const existingAdmin = await User.findOne({ email: 'admin@interview.ai' });
+  if (!existingAdmin) {
+    const passwordHash = await bcrypt.hash('Admin@123', salt);
+    await User.create({
+      _id: 'admin_master_sys',
+      name: 'System Administrator',
+      email: 'admin@interview.ai',
+      passwordHash,
+      role: 'admin'
+    });
+    console.log('[Database] Created default administrator: admin@interview.ai');
+  }
+
+  // 2. Generate the official 2026 Foundation Assessment questions
+  const generated = generateFoundationAssessment('system_master_template', 'seed_2026_foundation_v1');
+
+  await Interview.deleteMany({});
+  const primaryInterview = await Interview.create({
+    _id: 'int_foundation_2026',
+    title: '2026 Foundation Assessment + Coding & AI HR Round',
+    jobRole: 'Software Engineer (2026 Campus & Foundation Hiring)',
+    description: 'Official 2026 Pattern: 1. Numerical Ability (20Q • 25m), 2. Verbal Ability (25Q • 25m), 3. Reasoning Ability (20Q • 25m) [Total 65Q • 75m] + Coding Assessment + Conversational AI HR Round with strict Anti-Malpractice Proctoring & Voice Emotion Analytics.',
+    duration: 75,
+    difficulty: 'Intermediate',
+    questions: generated.allQuestions,
+    createdBy: 'System Administrator'
+  });
+
+  console.log('[Database] Initialized 2026 Foundation Assessment (20 Numerical + 25 Verbal + 20 Reasoning + Coding + AI HR)');
+
+  // 3. Ensure default candidate account exists and has an assigned session
+  let candidateUser = await User.findOne({ email: 'candidate@interview.ai' });
+  if (!candidateUser) {
+    const candidateHash = await bcrypt.hash('Candidate@123', salt);
+    candidateUser = await User.create({
+      _id: 'cand_user_default_2026',
+      name: 'Candidate',
+      email: 'candidate@interview.ai',
+      passwordHash: candidateHash,
+      role: 'candidate'
+    });
+    console.log('[Database] Created default candidate user: candidate@interview.ai');
+  }
+
+  let candidateProfile = await Candidate.findOne({ email: 'candidate@interview.ai' });
+  if (!candidateProfile) {
+    candidateProfile = await Candidate.create({
+      _id: 'cand_profile_default_2026',
+      userId: String(candidateUser._id || candidateUser.id),
+      name: candidateUser.name,
+      email: candidateUser.email,
+      phone: '',
+      skills: ['Algorithms', 'Data Structures', 'JavaScript', 'Node.js', 'React']
+    });
+    console.log('[Database] Created default candidate profile: Candidate');
+  }
+
+  // Ensure default pending session exists for candidate
+  let defaultSession = await InterviewSession.findOne({
+    candidateId: String(candidateProfile._id || candidateProfile.id),
+    status: { $in: ['pending', 'in_progress'] }
+  });
+
+  if (!defaultSession) {
+    defaultSession = await InterviewSession.create({
+      _id: 'sess_default_2026',
+      candidateId: String(candidateProfile._id || candidateProfile.id),
+      interviewId: String(primaryInterview._id || primaryInterview.id),
+      dynamicQuestions: generated.allQuestions,
+      status: 'pending'
+    });
+    console.log('[Database] Created default active session for candidate: sess_default_2026');
+  }
+}
+
+if (require.main === module) {
+  const { connectDB } = require('../config/db');
+  (async () => {
+    try {
+      await connectDB();
+      await initDatabase();
+      console.log('[Database] Initialization completed successfully.');
+      process.exit(0);
+    } catch (err) {
+      console.error('[Database Init Error]:', err);
+      process.exit(1);
+    }
+  })();
+}
+
+module.exports = initDatabase;

@@ -1,0 +1,22 @@
+{
+  "name": "candidate-sentiment-competency-evaluation-platform",
+  "version": "1.0.0",
+  "description": "Automated Candidate Interview Sentiment Analytics and Technical Competency Evaluation Platform",
+  "scripts": {
+    "start:backend": "cd backend && npm start",
+    "dev:backend": "cd backend && npm run dev",
+    "start:frontend": "cd frontend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build",
+    "seed": "cd backend && npm run seed",
+    "test": "node test_e2e.js"
+  },
+  "keywords": [
+    "interview-analytics",
+    "nlp",
+    "sentiment-analysis",
+    "technical-competency-evaluation"
+  ],
+  "author": "Antigravity AI",
+  "license": "ISC"
+}

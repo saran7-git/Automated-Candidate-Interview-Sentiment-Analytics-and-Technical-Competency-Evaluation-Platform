@@ -1,0 +1,12 @@
+[
+  {
+    "_id": "admin_master_sys",
+    "name": "System Administrator",
+    "email": "admin@interview.ai",
+    "passwordHash": "$2a$10$prWEyWK0KydauXxqj2NERe8jKfT1HXha4/2RJ4DpAoRUXSrOQm7IW",
+    "role": "admin",
+    "createdAt": "2026-10-08T09:26:59.583Z",
+    "updatedAt": "2026-10-08T09:26:59.583Z",
+    "id": "admin_master_sys"
+  }
+]
