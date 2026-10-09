@@ -18,7 +18,7 @@ async function runEndToEndFlow() {
   });
   const regData = await regRes.json();
   const token = regData.token;
-  const candidateId = regData.user.id;
+  const candidateId = regData.user.candidateId || regData.user.id;
   const authHeaders = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`

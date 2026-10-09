@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { reportAPI } from '../../api/client';
 import ScoreBadge, { RecommendationBadge } from '../../components/ScoreBadge';
@@ -49,11 +49,7 @@ const CandidateReportPage = () => {
   const [reportData, setReportData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchReport();
-  }, [sessionId]);
-
-  const fetchReport = async () => {
+  const fetchReport = useCallback(async () => {
     try {
       setLoading(true);
       const res = await reportAPI.getBySession(sessionId);
@@ -63,7 +59,11 @@ const CandidateReportPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [sessionId]);
+
+  useEffect(() => {
+    fetchReport();
+  }, [fetchReport]);
 
   if (loading) {
     return (
@@ -436,6 +436,82 @@ const CandidateReportPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Sentiment & Competency Trajectory Timeline */}
+      {sentimentTimeline.length > 0 && (
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-indigo-600" />
+              <h3 className="text-base font-bold text-slate-900">Sentiment & Technical Score Trajectory Across Questions</h3>
+            </div>
+            <span className="text-xs text-slate-500 font-medium">{sentimentTimeline.length} Evaluated Questions</span>
+          </div>
+
+          <div className="h-64 w-full pt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={sentimentTimeline} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                <XAxis dataKey="question" stroke="#94a3b8" fontSize={11} />
+                <YAxis domain={[0, 100]} stroke="#94a3b8" fontSize={11} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', color: '#fff', fontSize: '12px' }}
+                />
+                <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '8px' }} />
+                <Line type="monotone" dataKey="technicalScore" name="Technical Score" stroke="#10b981" strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="sentimentScore" name="Sentiment Score" stroke="#6366f1" strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 6 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {/* Question-by-Question AI Analysis Breakdown */}
+      {questionEvaluations.length > 0 && (
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <BrainCircuit className="w-5 h-5 text-indigo-600" />
+              <h3 className="text-base font-bold text-slate-900">Question-by-Question AI Evaluation Breakdown</h3>
+            </div>
+            <span className="text-xs font-semibold text-slate-500">{questionEvaluations.length} Questions</span>
+          </div>
+
+          <div className="space-y-3 pt-2 max-h-96 overflow-y-auto pr-1">
+            {questionEvaluations.map((qe, idx) => (
+              <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 font-bold text-slate-800">
+                    <span className="px-2 py-0.5 rounded-lg bg-indigo-100 text-indigo-800 text-[11px]">
+                      Q{qe.questionNumber}
+                    </span>
+                    <span className="text-slate-600">[{qe.category}]</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800">
+                      Technical: {qe.evaluation?.technicalScore || 0}%
+                    </span>
+                    <SentimentBadge sentiment={qe.evaluation?.sentiment || 'Neutral'} size="sm" />
+                  </div>
+                </div>
+
+                <p className="font-medium text-slate-900">{qe.question}</p>
+
+                <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-700">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Candidate Answer:</span>
+                  <p className="whitespace-pre-wrap">{qe.candidateAnswer || 'No answer submitted'}</p>
+                </div>
+
+                {qe.evaluation?.feedback && (
+                  <p className="text-[11px] text-indigo-900 bg-indigo-50/60 p-2 rounded-lg border border-indigo-100">
+                    <strong>AI Feedback: </strong>{qe.evaluation.feedback}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* AI-Generated Strengths and Weaknesses */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

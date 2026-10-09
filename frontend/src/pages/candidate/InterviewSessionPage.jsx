@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { sessionAPI, responseAPI, aiAPI } from '../../api/client';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -20,18 +20,13 @@ import {
   Code2,
   HeartHandshake,
   ShieldAlert,
-  ShieldCheck,
   Volume2,
   Calculator,
   BookOpen,
   Brain,
-  LayoutGrid,
   Video,
   Bookmark,
-  RotateCcw,
-  CheckCircle2,
-  AlertCircle,
-  HelpCircle
+  RotateCcw
 } from 'lucide-react';
 
 const ROUND_CONFIGS = [
@@ -159,19 +154,12 @@ const InterviewSessionPage = () => {
 
     return () => {
       if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-        try { mediaRecorderRef.current.stop(); } catch (e) {}
+        try { mediaRecorderRef.current.stop(); } catch (_e) {}
       }
     };
   }, [stream]);
 
-  useEffect(() => {
-    loadSessionData();
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [sessionId]);
-
-  const loadSessionData = async () => {
+  const loadSessionData = useCallback(async () => {
     try {
       setLoading(true);
       const res = await sessionAPI.getById(sessionId);
@@ -238,7 +226,6 @@ const InterviewSessionPage = () => {
         setTimeLeftSeconds((prev) => {
           if (prev <= 1) {
             clearInterval(timerRef.current);
-            handleAutoSubmit();
             return 0;
           }
           return prev - 1;
@@ -250,7 +237,14 @@ const InterviewSessionPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [sessionId, navigate, error]);
+
+  useEffect(() => {
+    loadSessionData();
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [loadSessionData]);
 
   const handleAutoSubmit = () => {
     warning('Assessment time expired! Submitting your answers automatically.');
@@ -353,7 +347,7 @@ const InterviewSessionPage = () => {
       setSubmitStep('Packaging recorded video and voice emotion stream...');
 
       if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-        try { mediaRecorderRef.current.stop(); } catch (e) {}
+        try { mediaRecorderRef.current.stop(); } catch (_e) {}
       }
 
       const answersPayload = Object.keys(answers).map((qId) => ({
