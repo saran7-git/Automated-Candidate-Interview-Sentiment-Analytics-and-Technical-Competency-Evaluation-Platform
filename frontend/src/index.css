@@ -4,34 +4,32 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased min-h-screen selection:bg-indigo-100 selection:text-indigo-900;
+    @apply bg-[#090d16] text-slate-100 font-sans antialiased selection:bg-blue-600 selection:text-white min-h-screen;
+    overflow-x: hidden;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #090d16;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #334155;
   }
 }
 
-/* Custom scrollbar for question trays and long responses */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-@media print {
-  .no-print {
-    display: none !important;
+@layer utilities {
+  .glass-card {
+    @apply bg-[#131b2e]/90 backdrop-blur-md border border-slate-800 shadow-card;
   }
-  body {
-    background: #ffffff !important;
+  .glass-panel {
+    @apply bg-[#0f172a]/95 backdrop-blur-lg border border-slate-800/80;
   }
 }

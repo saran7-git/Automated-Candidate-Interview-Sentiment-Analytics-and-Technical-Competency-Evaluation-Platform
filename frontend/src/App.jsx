@@ -1,67 +1,72 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
+import AppLayout from './layouts/AppLayout';
+import AuthLayout from './layouts/AuthLayout';
 
-// Layouts
-import MainLayout from './layouts/MainLayout';
-import CandidateLayout from './layouts/CandidateLayout';
+// Landing Page
+import LandingPage from './pages/landing/LandingPage';
 
-// Public Pages
-import LoginPage from './pages/public/LoginPage';
-import RegisterPage from './pages/public/RegisterPage';
+// Auth Pages
+import LoginPage from './pages/auth/LoginPage';
+import RegisterPage from './pages/auth/RegisterPage';
 
 // Candidate Pages
 import CandidateDashboard from './pages/candidate/CandidateDashboard';
-import InterviewInstructions from './pages/candidate/InterviewInstructions';
+import StartInterviewPage from './pages/candidate/StartInterviewPage';
 import InterviewSessionPage from './pages/candidate/InterviewSessionPage';
-import InterviewCompletionPage from './pages/candidate/InterviewCompletionPage';
-import AssessmentTerminatedPage from './pages/candidate/AssessmentTerminatedPage';
+import InterviewReportPage from './pages/candidate/InterviewReportPage';
+import InterviewHistoryPage from './pages/candidate/InterviewHistoryPage';
+import CandidatePerformancePage from './pages/candidate/CandidatePerformancePage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
-import CandidateManagement from './pages/admin/CandidateManagement';
-import InterviewManagement from './pages/admin/InterviewManagement';
-import CandidateReportPage from './pages/admin/CandidateReportPage';
-import CandidateComparisonPage from './pages/admin/CandidateComparisonPage';
-
-const RootRedirect = () => {
-  const { isAuthenticated, isAdmin, loading } = useAuth();
-
-  if (loading) return null;
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (isAdmin) return <Navigate to="/admin" replace />;
-  return <Navigate to="/candidate" replace />;
-};
+import AdminCandidatesPage from './pages/admin/AdminCandidatesPage';
+import AdminQuestionsPage from './pages/admin/AdminQuestionsPage';
+import AdminInterviewsPage from './pages/admin/AdminInterviewsPage';
+import AdminAnalyticsPage from './pages/admin/AdminAnalyticsPage';
 
 function App() {
   return (
-    <Routes>
-      {/* Public Authentication Routes */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+    <AuthProvider>
+      <Routes>
+        {/* Public Landing Page */}
+        <Route path="/" element={<LandingPage />} />
 
-      {/* Candidate Portal Routes */}
-      <Route path="/candidate" element={<CandidateLayout />}>
-        <Route index element={<CandidateDashboard />} />
-        <Route path="instructions/:sessionId" element={<InterviewInstructions />} />
-        <Route path="interview/:sessionId" element={<InterviewSessionPage />} />
-        <Route path="complete/:sessionId" element={<InterviewCompletionPage />} />
-        <Route path="terminated/:sessionId" element={<AssessmentTerminatedPage />} />
-      </Route>
+        {/* Auth Routes */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+        </Route>
 
-      {/* Admin / Recruiter Dashboard Routes */}
-      <Route path="/admin" element={<MainLayout />}>
-        <Route index element={<AdminDashboard />} />
-        <Route path="candidates" element={<CandidateManagement />} />
-        <Route path="interviews" element={<InterviewManagement />} />
-        <Route path="reports/:sessionId" element={<CandidateReportPage />} />
-        <Route path="compare" element={<CandidateComparisonPage />} />
-      </Route>
+        {/* Standalone Assessment Room */}
+        <Route path="/candidate/interview/active/:id" element={<InterviewSessionPage />} />
 
-      {/* Root & Fallback */}
-      <Route path="/" element={<RootRedirect />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Candidate Protected Portal */}
+        <Route element={<AppLayout requiredRole="candidate" />}>
+          <Route path="/candidate/dashboard" element={<CandidateDashboard />} />
+          <Route path="/candidate/interview/setup" element={<StartInterviewPage />} />
+          <Route path="/candidate/results/:id" element={<InterviewReportPage />} />
+          <Route path="/candidate/interviews" element={<InterviewHistoryPage />} />
+          <Route path="/candidate/performance" element={<CandidatePerformancePage />} />
+          <Route path="/candidate/reports" element={<InterviewHistoryPage />} />
+          <Route path="/candidate/profile" element={<CandidateDashboard />} />
+          <Route path="/candidate/settings" element={<CandidateDashboard />} />
+        </Route>
+
+        {/* Admin Protected Console */}
+        <Route element={<AppLayout requiredRole="admin" />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/candidates" element={<AdminCandidatesPage />} />
+          <Route path="/admin/questions" element={<AdminQuestionsPage />} />
+          <Route path="/admin/interviews" element={<AdminInterviewsPage />} />
+          <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
+        </Route>
+
+        {/* Catch-all */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 

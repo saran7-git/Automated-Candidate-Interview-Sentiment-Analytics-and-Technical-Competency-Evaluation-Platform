@@ -1,609 +1,359 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { sessionAPI, responseAPI } from '../../api/client';
-import LoadingSpinner from '../../components/LoadingSpinner';
-import Modal from '../../components/Modal';
-import ProctoringCamera from '../../components/ProctoringCamera';
-import ProctoringWarningOverlay from '../../components/ProctoringWarningOverlay';
-import SpeechToTextButton from '../../components/SpeechToTextButton';
-import CodeEditor from '../../components/CodeEditor';
-import MCQQuestionView from '../../components/MCQQuestionView';
-import { useMediaStream } from '../../hooks/useMediaStream';
-import { useProctoringEngine } from '../../hooks/useProctoringEngine';
-import { useToast } from '../../context/ToastContext';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { interviewAPI, answerAPI } from '../../services/api';
 import {
   Clock,
   ChevronLeft,
   ChevronRight,
-  Send,
-  AlertCircle,
-  HelpCircle,
-  Sparkles,
-  Check,
+  Save,
   CheckCircle2,
-  Code2,
+  Circle,
+  AlertCircle,
+  BrainCircuit,
   Cpu,
-  Mic,
-  HeartHandshake,
-  ShieldCheck,
-  ShieldAlert,
-  Volume2
+  Sparkles,
 } from 'lucide-react';
 
-const ROUND_CONFIGS = [
-  { id: 'mcq', label: '1. MCQ Round', icon: Check, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
-  { id: 'technical', label: '2. Technical Round', icon: Cpu, color: 'text-blue-600 bg-blue-50 border-blue-200' },
-  { id: 'aptitude', label: '3. Aptitude Round', icon: Sparkles, color: 'text-amber-600 bg-amber-50 border-amber-200' },
-  { id: 'coding', label: '4. Coding Round', icon: Code2, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
-  { id: 'communication', label: '5. Communication Round', icon: Mic, color: 'text-purple-600 bg-purple-50 border-purple-200' },
-  { id: 'hr', label: '6. HR Final AI', icon: HeartHandshake, color: 'text-rose-600 bg-rose-50 border-rose-200' }
-];
-
-const InterviewSessionPage = () => {
-  const { sessionId } = useParams();
+export const InterviewSessionPage = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { success, error, warning } = useToast();
+  const location = useLocation();
 
-  const [session, setSession] = useState(null);
-  const [questions, setQuestions] = useState([]);
+  const [interview, setInterview] = useState(location.state?.interview || null);
+  const [questions, setQuestions] = useState(location.state?.questions || []);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitStep, setSubmitStep] = useState('');
-  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-  const [timeLeftSeconds, setTimeLeftSeconds] = useState(2700); // 45 mins default
+  const [answersMap, setAnswersMap] = useState({});
+  const [timeRemaining, setTimeRemaining] = useState(30 * 60); // 30 mins
+  const [isSaving, setIsSaving] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [processingStep, setProcessingStep] = useState(0);
+  const [error, setError] = useState('');
 
-  // Active camera and microphone stream for the assessment
-  const {
-    stream,
-    isCameraActive,
-    isMicActive,
-    audioLevel,
-    toggleCamera,
-    toggleMic
-  } = useMediaStream({ video: true, audio: true, autoStart: true });
-
-  const timerRef = useRef(null);
-
-  // Terminate assessment immediately upon uncorrected malpractice
-  const handleTerminateAssessment = async ({ reason, violationType }) => {
-    try {
-      await sessionAPI.terminate(sessionId, { reason, violationType });
-    } catch (e) {
-      console.warn('Termination API notice:', e.message);
-    }
-    navigate(`/candidate/terminated/${sessionId}`, {
-      state: { reason, violationType }
-    });
-  };
-
-  // AI Proctoring Engine: Computer Vision Face & Gaze Tracking
-  const {
-    isOutOfFrame,
-    isLookingAway,
-    activeViolation,
-    countdownSeconds,
-    isTerminated
-  } = useProctoringEngine({
-    stream,
-    isCameraActive,
-    onTerminate: handleTerminateAssessment,
-    enabled: !loading && !submitting
-  });
-
+  // Timer interval
   useEffect(() => {
-    loadSessionData();
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [sessionId]);
-
-  const loadSessionData = async () => {
-    try {
-      setLoading(true);
-      const res = await sessionAPI.getById(sessionId);
-      const sess = res.session;
-
-      if (sess.status === 'completed') {
-        navigate(`/candidate/complete/${sessionId}`);
-        return;
-      }
-
-      if (sess.status === 'disqualified' || sess.status === 'terminated_malpractice') {
-        navigate(`/candidate/terminated/${sessionId}`);
-        return;
-      }
-
-      setSession(sess);
-      const qList = sess.interview?.questions || [];
-      setQuestions(qList);
-
-      // Pre-fill existing responses
-      const initialAnswers = {};
-      (sess.responses || []).forEach((r) => {
-        initialAnswers[r.questionId] = r.candidateAnswer;
+    const timer = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          handleSubmitFinal();
+          return 0;
+        }
+        return prev - 1;
       });
-      setAnswers(initialAnswers);
+    }, 1000);
 
-      // Initialize timer based on interview duration
-      const durationMins = sess.interview?.duration || 45;
-      setTimeLeftSeconds(durationMins * 60);
+    return () => clearInterval(timer);
+  }, []);
 
-      // Start timer
-      timerRef.current = setInterval(() => {
-        setTimeLeftSeconds((prev) => {
-          if (prev <= 1) {
-            clearInterval(timerRef.current);
-            return 0;
+  // Fetch interview & questions if not in router state
+  useEffect(() => {
+    if (!questions.length) {
+      const fetchSession = async () => {
+        try {
+          const res = await interviewAPI.getInterviewById(id);
+          if (res.data?.success) {
+            setInterview(res.data.interview);
+            setQuestions(res.data.questions);
+
+            // Populate existing answers if any
+            const ansObj = {};
+            (res.data.answers || []).forEach((a) => {
+              ansObj[a.question_id] = a.text_answer;
+            });
+            setAnswersMap(ansObj);
           }
-          return prev - 1;
-        });
-      }, 1000);
-    } catch (err) {
-      error(err.message || 'Failed to load interview session');
-    } finally {
-      setLoading(false);
+        } catch (err) {
+          setError('Failed to load assessment session. Please try again.');
+        }
+      };
+      fetchSession();
     }
-  };
+  }, [id]);
 
-  const getQuestionRound = (q) => {
-    if (!q) return 'technical';
-    if (q.round) return q.round;
-    const cat = (q.category || '').toLowerCase();
-    const title = (q.question || '').toLowerCase();
-    if (q.type === 'coding' || title.includes('two sum') || title.includes('code')) return 'coding';
-    if (q.options && q.options.length > 0) {
-      if (cat.includes('aptitude') || cat.includes('reasoning') || title.includes('microchip') || title.includes('cluster')) {
-        return 'aptitude';
-      }
-      return 'mcq';
-    }
-    if (q.type === 'speech' || cat.includes('communication') || title.includes('verbal') || title.includes('incident')) {
-      return 'communication';
-    }
-    if (cat.includes('hr') || cat.includes('behavioral') || title.includes('disagreement')) return 'hr';
-    return 'technical';
-  };
+  const currentQuestion = questions[currentIndex] || null;
+  const currentAnswer = currentQuestion ? answersMap[currentQuestion.id || currentQuestion.question_id] || '' : '';
 
-  const currentQuestion = questions[currentIndex];
-  const currentRoundId = getQuestionRound(currentQuestion);
-  const currentRoundConfig = ROUND_CONFIGS.find((r) => r.id === currentRoundId) || ROUND_CONFIGS[1];
-  const currentAnswer = currentQuestion ? answers[currentQuestion._id || currentQuestion.id] || '' : '';
-
-  const handleAnswerChange = (text) => {
+  const handleAnswerChange = (val) => {
     if (!currentQuestion) return;
-    const qId = currentQuestion._id || currentQuestion.id;
-    setAnswers((prev) => ({
-      ...prev,
-      [qId]: text
-    }));
+    const qId = currentQuestion.id || currentQuestion.question_id;
+    setAnswersMap((prev) => ({ ...prev, [qId]: val }));
   };
 
-  const handleVoiceTranscript = (spokenText) => {
+  const handleSaveAnswer = async () => {
     if (!currentQuestion) return;
-    const qId = currentQuestion._id || currentQuestion.id;
-    const existing = answers[qId] ? answers[qId].trim() + ' ' : '';
-    const updated = existing + spokenText;
-    setAnswers((prev) => ({
-      ...prev,
-      [qId]: updated
-    }));
-    autosaveAnswer(qId, updated);
-  };
-
-  // Autosave answer on question change
-  const autosaveAnswer = async (qId, ansText) => {
-    if (!sessionId || !qId) return;
+    setIsSaving(true);
     try {
-      await responseAPI.saveAnswer({
-        sessionId,
+      const qId = currentQuestion.id || currentQuestion.question_id;
+      await answerAPI.saveAnswer({
+        interviewId: id,
         questionId: qId,
-        candidateAnswer: ansText || ''
+        textAnswer: currentAnswer,
+        timeSpentSeconds: 60,
       });
     } catch (err) {
-      console.warn('Autosave background notice:', err.message);
+      console.warn('[Save Warning]:', err.message);
+    } finally {
+      setTimeout(() => setIsSaving(false), 500);
     }
   };
 
-  const handleNext = () => {
-    if (currentQuestion) {
-      autosaveAnswer(currentQuestion._id || currentQuestion.id, currentAnswer);
-    }
+  const handleNext = async () => {
+    await handleSaveAnswer();
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((prev) => prev + 1);
+    } else {
+      handleSubmitFinal();
     }
   };
 
-  const handlePrevious = () => {
-    if (currentQuestion) {
-      autosaveAnswer(currentQuestion._id || currentQuestion.id, currentAnswer);
-    }
+  const handlePrev = () => {
     if (currentIndex > 0) {
       setCurrentIndex((prev) => prev - 1);
     }
   };
 
-  const handleJumpToQuestion = (index) => {
-    if (currentQuestion) {
-      autosaveAnswer(currentQuestion._id || currentQuestion.id, currentAnswer);
-    }
-    setCurrentIndex(index);
-  };
+  const handleSubmitFinal = async () => {
+    setIsProcessing(true);
+    setProcessingStep(1); // Answer received
 
-  const handleJumpToRound = (roundId) => {
-    const targetIdx = questions.findIndex((q) => getQuestionRound(q) === roundId);
-    if (targetIdx !== -1) {
-      handleJumpToQuestion(targetIdx);
+    // Simulated step sequence for realistic UX
+    setTimeout(() => setProcessingStep(2), 700); // Technical concepts detected
+    setTimeout(() => setProcessingStep(3), 1400); // Evaluating competency
+    setTimeout(() => setProcessingStep(4), 2100); // Generating insights
+
+    try {
+      const payloadAnswers = questions.map((q) => {
+        const qId = q.id || q.question_id;
+        return {
+          questionId: qId,
+          textAnswer: answersMap[qId] || '',
+          timeSpentSeconds: 60,
+        };
+      });
+
+      const res = await interviewAPI.completeInterview(id, {
+        answers: payloadAnswers,
+        durationSeconds: (30 * 60) - timeRemaining,
+      });
+
+      setTimeout(() => {
+        navigate(`/candidate/results/${id}`, { replace: true });
+      }, 2600);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error evaluating interview.');
+      setIsProcessing(false);
     }
   };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleSubmitInterview = async () => {
-    setIsSubmitModalOpen(false);
-    setSubmitting(true);
-
-    try {
-      setSubmitStep('Compiling multi-round assessment submissions...');
-      const payloadAnswers = questions.map((q) => {
-        const qId = q._id || q.id;
-        return {
-          questionId: qId,
-          candidateAnswer: answers[qId] || ''
-        };
-      });
-
-      setTimeout(() => {
-        setSubmitStep('Executing AI Technical & NLP Sentiment Evaluation...');
-      }, 1000);
-
-      setTimeout(() => {
-        setSubmitStep('Generating final multi-round evaluation dossier...');
-      }, 2000);
-
-      await sessionAPI.submit(sessionId, {
-        answers: payloadAnswers
-      });
-
-      success('Assessment submitted successfully! Evaluation completed.');
-      navigate(`/candidate/complete/${sessionId}`);
-    } catch (err) {
-      error(err.message || 'Submission failed');
-      setSubmitting(false);
-    }
-  };
-
-  if (loading) {
-    return <LoadingSpinner message="Preparing 6-round proctored assessment environment..." />;
-  }
-
-  if (submitting) {
-    return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center">
-        <LoadingSpinner
-          message={submitStep}
-          submessage="AI pipeline is evaluating MCQs, code correctness, verbal communication, and technical depth."
-          isAi={true}
-        />
-      </div>
-    );
-  }
-
-  const answeredCount = Object.values(answers).filter((a) => (a || '').trim().length > 0).length;
   const wordCount = currentAnswer.trim() ? currentAnswer.trim().split(/\s+/).length : 0;
-  const charCount = currentAnswer.length;
-  const RoundIcon = currentRoundConfig.icon;
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Zero-Tolerance Proctoring Malpractice Warning Overlay */}
-      <ProctoringWarningOverlay
-        activeViolation={activeViolation}
-        countdownSeconds={countdownSeconds}
-        isTerminated={isTerminated}
-      />
-
-      {/* Top Header bar with Progress, Telemetry, and Timer */}
-      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-            {session?.interview?.title}
-          </span>
-          <div className="text-base font-bold text-slate-900 mt-0.5">
-            Question {currentIndex + 1} of {questions.length}
+    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col justify-between">
+      {/* 1. TOP BAR */}
+      <header className="h-16 bg-[#0f172a] border-b border-slate-800 px-6 flex items-center justify-between sticky top-0 z-30">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-black text-white text-sm shadow-glow-blue">
+            IQ
           </div>
-        </div>
-
-        {/* Proctoring Status & Timer */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold border border-slate-800 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] uppercase tracking-wider">AI Proctoring Active</span>
-          </div>
-
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold">
-            <Volume2 className="w-3.5 h-3.5 text-indigo-600" />
-            <span>Mic: {audioLevel > 5 ? `${audioLevel}%` : 'Listening'}</span>
-          </div>
-
-          <div
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-bold ${
-              timeLeftSeconds < 300
-                ? 'bg-rose-50 text-rose-700 border-rose-200 animate-pulse'
-                : 'bg-indigo-50 text-indigo-700 border-indigo-200'
-            }`}
-          >
-            <Clock className="w-4 h-4" />
-            <span>Time Left: {formatTime(timeLeftSeconds)}</span>
-          </div>
-
-          <button
-            onClick={() => setIsSubmitModalOpen(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] transition shadow-md shadow-emerald-600/20"
-          >
-            <Send className="w-3.5 h-3.5" />
-            <span>Submit Interview</span>
-          </button>
-        </div>
-      </div>
-
-      {/* 6 Assessment Rounds Navigation Tabs */}
-      <div className="bg-white rounded-2xl p-3 border border-slate-200/90 shadow-sm">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {ROUND_CONFIGS.map((rnd) => {
-            const isRoundActive = currentRoundId === rnd.id;
-            const RndIcon = rnd.icon;
-            const roundQuestions = questions.filter((q) => getQuestionRound(q) === rnd.id);
-            const roundAnswered = roundQuestions.filter((q) => (answers[q._id || q.id] || '').trim().length > 0).length;
-
-            return (
-              <button
-                key={rnd.id}
-                type="button"
-                onClick={() => handleJumpToRound(rnd.id)}
-                className={`flex-shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                  isRoundActive
-                    ? 'bg-slate-900 text-white shadow-md'
-                    : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200/60'
-                }`}
-              >
-                <RndIcon className={`w-3.5 h-3.5 ${isRoundActive ? 'text-indigo-400' : 'text-slate-500'}`} />
-                <span>{rnd.label}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                  isRoundActive ? 'bg-slate-800 text-indigo-300' : 'bg-slate-200 text-slate-600'
-                }`}>
-                  {roundAnswered}/{roundQuestions.length}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Progress Bar & Question Jump Palette */}
-      <div className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm space-y-3">
-        <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
-          <span>Overall Assessment Progress: {Math.round((answeredCount / questions.length) * 100)}%</span>
-          <span>{answeredCount} / {questions.length} Answered Across All Rounds</span>
-        </div>
-
-        <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-          <div
-            className="bg-indigo-600 h-full transition-all duration-300 rounded-full"
-            style={{ width: `${(answeredCount / questions.length) * 100}%` }}
-          />
-        </div>
-
-        {/* Question Bubble Palette */}
-        <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
-          {questions.map((q, idx) => {
-            const isCurrent = idx === currentIndex;
-            const qId = q._id || q.id;
-            const hasAnswer = (answers[qId] || '').trim().length > 0;
-            const qRnd = getQuestionRound(q);
-
-            return (
-              <button
-                key={qId}
-                onClick={() => handleJumpToQuestion(idx)}
-                className={`w-8 h-8 rounded-lg text-xs font-bold transition flex items-center justify-center ${
-                  isCurrent
-                    ? 'bg-indigo-600 text-white ring-2 ring-indigo-600 ring-offset-2'
-                    : hasAnswer
-                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-                title={`Q${idx + 1} (${qRnd.toUpperCase()})`}
-              >
-                {idx + 1}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Main Question Card with Dynamic Per-Round Renderers */}
-      {currentQuestion && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
-          {/* Header Badges */}
-          <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-slate-900 text-white flex items-center gap-1.5 shadow-sm">
-                <RoundIcon className="w-3.5 h-3.5 text-indigo-400" />
-                <span>{currentRoundConfig.label}</span>
-              </span>
-
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800">
-                {currentQuestion.category}
-              </span>
-
-              <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
-                Difficulty: {currentQuestion.difficulty}
-              </span>
-            </div>
-
-            <div className="text-xs font-semibold text-slate-500">
-              Max Score: {currentQuestion.maxScore || 10} Points
-            </div>
-          </div>
-
-          {/* Question Text */}
           <div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 leading-relaxed">
-              {currentQuestion.question}
-            </h2>
-            <p className="mt-1.5 text-xs text-slate-500">
-              {currentRoundId === 'mcq' || currentRoundId === 'aptitude'
-                ? 'Select the single best answer option below.'
-                : currentRoundId === 'coding'
-                ? 'Write clean, optimal code in the editor below and validate against test cases.'
-                : currentRoundId === 'communication'
-                ? 'Click "Dictate with Microphone" to record your verbal briefing response.'
-                : 'Formulate a comprehensive, technically sound answer. Definitions, mechanisms, and examples are evaluated.'}
-            </p>
+            <span className="text-sm font-extrabold text-white tracking-tight">InterviewIQ</span>
+            <span className="text-slate-500 mx-2">•</span>
+            <span className="text-xs font-semibold text-slate-300">Technical Interview</span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-6">
+          <div className="text-xs font-bold text-slate-300 bg-slate-800/80 border border-slate-700/80 px-3.5 py-1.5 rounded-xl">
+            Question <span className="text-blue-400">{currentIndex + 1}</span> / {questions.length}
           </div>
 
-          {/* Dynamic Input Body: MCQ / Coding / Speech / Text */}
-          {currentRoundId === 'mcq' || currentRoundId === 'aptitude' || (currentQuestion.options && currentQuestion.options.length > 0) ? (
-            <MCQQuestionView
-              question={currentQuestion}
-              selectedAnswer={currentAnswer}
-              onSelectAnswer={(opt) => {
-                handleAnswerChange(opt);
-                autosaveAnswer(currentQuestion._id || currentQuestion.id, opt);
-              }}
-            />
-          ) : currentRoundId === 'coding' || currentQuestion.type === 'coding' ? (
-            <CodeEditor
-              code={currentAnswer || currentQuestion.starterCode}
-              starterCode={currentQuestion.starterCode}
-              testCases={currentQuestion.testCases}
-              onChange={(codeVal) => {
-                handleAnswerChange(codeVal);
-                autosaveAnswer(currentQuestion._id || currentQuestion.id, codeVal);
-              }}
-            />
-          ) : (
-            <div className="space-y-2">
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-600">
-                <label htmlFor="answer-box">Your Response</label>
-                <div className="flex items-center gap-3">
-                  <SpeechToTextButton onTranscript={handleVoiceTranscript} />
-                  <div className="flex items-center gap-2 text-slate-400 font-normal">
-                    <span>{wordCount} Words</span>
-                    <span>•</span>
-                    <span>{charCount} Characters</span>
-                  </div>
-                </div>
-              </div>
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold font-mono">
+            <Clock className="w-3.5 h-3.5" />
+            <span>Time Remaining: {formatTime(timeRemaining)}</span>
+          </div>
+        </div>
+      </header>
 
-              <textarea
-                id="answer-box"
-                rows={currentRoundId === 'communication' ? 6 : 8}
-                value={currentAnswer}
-                onChange={(e) => handleAnswerChange(e.target.value)}
-                placeholder={
-                  currentRoundId === 'communication'
-                    ? 'Speak your response using the microphone button above, or type your structured executive briefing here...'
-                    : 'Type your detailed answer or click "Dictate with Microphone" to speak. Describe fundamental principles, relevant frameworks, and practical examples...'
-                }
-                className="w-full p-4 text-sm bg-slate-50/70 border border-slate-200 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition leading-relaxed"
-              />
+      {/* 2. MAIN WORKSPACE */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-6 md:p-8 grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+        {/* Left 3 Columns: Question & Answer Editor */}
+        <div className="lg:col-span-3 space-y-6">
+          {error && (
+            <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-xs text-red-400 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{error}</span>
             </div>
           )}
 
-          {/* Navigation Controls */}
-          <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-            <button
-              onClick={handlePrevious}
-              disabled={currentIndex === 0}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 transition"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              <span>Previous Question</span>
-            </button>
+          {/* Question Box */}
+          <div className="bg-[#131b2e] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-card">
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <span className="text-xs font-bold text-blue-400 uppercase tracking-wider">
+                Question {currentIndex + 1}
+              </span>
+              <span className="text-[11px] font-semibold bg-slate-800 border border-slate-700 text-slate-300 px-2.5 py-0.5 rounded-md">
+                {currentQuestion?.skill || currentQuestion?.category || 'Technical'}
+              </span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold text-white leading-snug">
+              {currentQuestion?.question || 'Loading question prompt...'}
+            </h2>
+          </div>
 
-            <div className="flex items-center gap-2">
-              {currentIndex === questions.length - 1 ? (
+          {/* Answer Editor Box */}
+          <div className="bg-[#131b2e] border border-slate-800 rounded-3xl p-6 shadow-card space-y-3">
+            <div className="flex items-center justify-between text-xs text-slate-400">
+              <span className="font-semibold text-slate-300">Your Technical Response</span>
+              <span>{wordCount} Words</span>
+            </div>
+
+            <textarea
+              rows={11}
+              value={currentAnswer}
+              onChange={(e) => handleAnswerChange(e.target.value)}
+              placeholder="Type your structured answer here. Include core architectural concepts, key trade-offs, and technical rationale..."
+              className="w-full p-4 rounded-2xl bg-[#090d16] border border-slate-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm text-slate-100 placeholder-slate-600 outline-none resize-none font-sans leading-relaxed transition-all"
+            />
+
+            {/* Bottom Controls */}
+            <div className="flex items-center justify-between pt-2">
+              <button
+                type="button"
+                onClick={handlePrev}
+                disabled={currentIndex === 0}
+                className="px-4 py-2.5 rounded-xl border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-300 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors flex items-center gap-1.5"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Previous
+              </button>
+
+              <div className="flex items-center gap-3">
                 <button
-                  onClick={() => setIsSubmitModalOpen(true)}
-                  className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md shadow-emerald-600/20 transition"
+                  type="button"
+                  onClick={handleSaveAnswer}
+                  disabled={isSaving}
+                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors flex items-center gap-1.5"
                 >
-                  <Send className="w-4 h-4" />
-                  <span>Submit Final Multi-Round Assessment</span>
+                  <Save className="w-3.5 h-3.5" />
+                  {isSaving ? 'Saved ✓' : 'Save Answer'}
                 </button>
-              ) : (
+
                 <button
+                  type="button"
                   onClick={handleNext}
-                  className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-600/20 transition"
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-glow-blue flex items-center gap-1.5"
                 >
-                  <span>Next Question</span>
+                  <span>{currentIndex === questions.length - 1 ? 'Submit Assessment' : 'Submit & Continue'}</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
-              )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right 1 Column: Interview Progress Palette */}
+        <div className="bg-[#131b2e] border border-slate-800 rounded-3xl p-6 shadow-card space-y-4 sticky top-24">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Interview Progress</h3>
+            <span className="text-[11px] font-bold text-blue-400">
+              {Object.keys(answersMap).filter((k) => answersMap[k]?.trim().length > 0).length} / {questions.length} Answered
+            </span>
+          </div>
+
+          <div className="space-y-2">
+            {questions.map((q, idx) => {
+              const qId = q.id || q.question_id;
+              const isAnswered = answersMap[qId]?.trim().length > 0;
+              const isCurrent = currentIndex === idx;
+
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    handleSaveAnswer();
+                    setCurrentIndex(idx);
+                  }}
+                  className={`w-full p-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-all ${
+                    isCurrent
+                      ? 'bg-blue-600 text-white shadow-glow-blue'
+                      : isAnswered
+                      ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/15'
+                      : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    {isAnswered ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    ) : isCurrent ? (
+                      <Circle className="w-3.5 h-3.5 fill-current" />
+                    ) : (
+                      <Circle className="w-3.5 h-3.5 text-slate-600" />
+                    )}
+                    Question {idx + 1}
+                  </span>
+                  <span className="text-[10px] opacity-75">
+                    {isAnswered ? 'Answered' : isCurrent ? 'Active' : 'Pending'}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="pt-4 border-t border-slate-800">
+            <button
+              type="button"
+              onClick={handleSubmitFinal}
+              className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-glow-emerald flex items-center justify-center gap-2"
+            >
+              <span>Finish & Generate Report</span>
+            </button>
+          </div>
+        </div>
+      </main>
+
+      {/* 3. AI PROCESSING MODAL */}
+      {isProcessing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+          <div className="bg-[#0f172a] border border-slate-800 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl space-y-6">
+            <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 mx-auto flex items-center justify-center animate-pulse">
+              <BrainCircuit className="w-7 h-7" />
+            </div>
+
+            <div>
+              <h3 className="text-xl font-black text-white">Analyzing Your Response...</h3>
+              <p className="text-xs text-slate-400 mt-1">
+                Evaluating technical competency, keyword presence, and communication sentiment.
+              </p>
+            </div>
+
+            <div className="space-y-3 text-left max-w-xs mx-auto text-xs font-semibold">
+              <div className={`flex items-center gap-3 ${processingStep >= 1 ? 'text-emerald-400' : 'text-slate-500'}`}>
+                {processingStep >= 1 ? <CheckCircle2 className="w-4 h-4" /> : <Circle className="w-4 h-4" />}
+                <span>Answer received</span>
+              </div>
+              <div className={`flex items-center gap-3 ${processingStep >= 2 ? 'text-emerald-400' : 'text-slate-500'}`}>
+                {processingStep >= 2 ? <CheckCircle2 className="w-4 h-4" /> : <Circle className="w-4 h-4" />}
+                <span>Technical concepts detected</span>
+              </div>
+              <div className={`flex items-center gap-3 ${processingStep >= 3 ? 'text-emerald-400' : 'text-slate-500'}`}>
+                {processingStep >= 3 ? <CheckCircle2 className="w-4 h-4" /> : <Circle className="w-4 h-4" />}
+                <span>Evaluating competency & relevance</span>
+              </div>
+              <div className={`flex items-center gap-3 ${processingStep >= 4 ? 'text-emerald-400' : 'text-slate-500'}`}>
+                {processingStep >= 4 ? <CheckCircle2 className="w-4 h-4" /> : <Circle className="w-4 h-4" />}
+                <span>Generating insights & performance report</span>
+              </div>
             </div>
           </div>
         </div>
       )}
-
-      {/* Confirmation Modal */}
-      <Modal
-        isOpen={isSubmitModalOpen}
-        onClose={() => setIsSubmitModalOpen(false)}
-        title="Submit Multi-Round Assessment"
-      >
-        <div className="space-y-4">
-          <p className="text-sm text-slate-600">
-            Are you ready to submit your assessment? You have completed{' '}
-            <strong className="text-slate-900">{answeredCount}</strong> of{' '}
-            <strong className="text-slate-900">{questions.length}</strong> questions across all 6 rounds.
-          </p>
-
-          {questions.length - answeredCount > 0 && (
-            <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-              <span>
-                You have <strong>{questions.length - answeredCount}</strong> unanswered questions. Unanswered questions will receive 0 marks.
-              </span>
-            </div>
-          )}
-
-          <p className="text-xs text-slate-500 leading-relaxed">
-            Upon confirmation, the automated AI pipeline evaluates your MCQ answers, technical concept coverage, code correctness, verbal communication, and HR behavioral sentiment.
-          </p>
-
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-            <button
-              onClick={() => setIsSubmitModalOpen(false)}
-              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition"
-            >
-              Continue Answering
-            </button>
-            <button
-              onClick={handleSubmitInterview}
-              className="px-5 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-600/20 transition"
-            >
-              Confirm Submission
-            </button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* Floating Picture-in-Picture Proctoring Camera Widget */}
-      <ProctoringCamera
-        stream={stream}
-        isCameraActive={isCameraActive}
-        isMicActive={isMicActive}
-        audioLevel={audioLevel}
-        onToggleCamera={toggleCamera}
-        onToggleMic={toggleMic}
-        warningCount={isOutOfFrame || isLookingAway ? 1 : 0}
-      />
     </div>
   );
 };
