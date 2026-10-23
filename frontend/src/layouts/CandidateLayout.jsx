@@ -1,16 +1,19 @@
 import React from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { Navbar } from '../components/common/Navbar';
+import { Sidebar } from '../components/common/Sidebar';
 
-const CandidateLayout = () => {
-  const { isAuthenticated, isCandidate, isAdmin, loading } = useAuth();
+export const CandidateLayout = () => {
+  const { isAuthenticated, isLoading, role } = useAuth();
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <LoadingSpinner message="Verifying candidate credentials..." />
+      <div className="flex items-center justify-center min-h-screen bg-dark-950 text-slate-400">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-sm font-medium">Loading session...</p>
+        </div>
       </div>
     );
   }
@@ -19,15 +22,15 @@ const CandidateLayout = () => {
     return <Navigate to="/login" replace />;
   }
 
-  // If admin logged in, allow them to view or navigate, else allow candidates
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-dark-950 text-slate-100 flex flex-col">
       <Navbar />
-      <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8">
-        <Outlet />
-      </main>
+      <div className="flex flex-1">
+        <Sidebar />
+        <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };
-
-export default CandidateLayout;
